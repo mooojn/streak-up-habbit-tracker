@@ -46,7 +46,7 @@ class HabitsFragment : Fragment() {
             }
 
             override fun onCompleteToday(habit: Habit) {
-                completeHabitForToday(habit)
+                toggleHabitCompletion(habit)
             }
         })
 
@@ -65,19 +65,19 @@ class HabitsFragment : Fragment() {
         emptyStateText?.isVisible = habits.isEmpty()
     }
 
-    private fun completeHabitForToday(habit: Habit) {
-        when (HabitRepository.completeHabitForToday(habit.id)) {
-            HabitRepository.CompleteHabitResult.COMPLETED -> {
+    private fun toggleHabitCompletion(habit: Habit) {
+        when (HabitRepository.toggleHabitForToday(habit.id)) {
+            HabitRepository.HabitToggleResult.COMPLETED -> {
                 refreshHabits()
                 Toast.makeText(requireContext(), R.string.habit_completed_today, Toast.LENGTH_SHORT).show()
             }
 
-            HabitRepository.CompleteHabitResult.ALREADY_COMPLETED -> {
-                Toast.makeText(requireContext(), R.string.habit_already_completed_today, Toast.LENGTH_SHORT)
-                    .show()
+            HabitRepository.HabitToggleResult.UNCOMPLETED -> {
+                refreshHabits()
+                Toast.makeText(requireContext(), R.string.habit_uncompleted_today, Toast.LENGTH_SHORT).show()
             }
 
-            HabitRepository.CompleteHabitResult.NOT_FOUND -> {
+            HabitRepository.HabitToggleResult.NOT_FOUND -> {
                 refreshHabits()
             }
         }

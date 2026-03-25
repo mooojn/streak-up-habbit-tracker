@@ -11,9 +11,9 @@ import java.util.Locale
 
 object HabitRepository {
 
-    enum class CompleteHabitResult {
+    enum class HabitToggleResult {
         COMPLETED,
-        ALREADY_COMPLETED,
+        UNCOMPLETED,
         NOT_FOUND
     }
 
@@ -72,13 +72,28 @@ object HabitRepository {
     }
 
     @Synchronized
-    fun completeHabitForToday(habitId: String): CompleteHabitResult {
-        val habit = habits.find { it.id == habitId } ?: return CompleteHabitResult.NOT_FOUND
+    fun toggleHabitForToday(habitId: String): HabitToggleResult {
+        val habit = habits.find { it.id == habitId } ?: return HabitToggleResult.NOT_FOUND
 
         val today = todayKey()
         if (habit.lastCompletedDate == today) {
-            return CompleteHabitResult.ALREADY_COMPLETED
+            val restoredStreak = habit.previousStreakCount.coerceAtLeast(0)
+            habit.streakCount = restoredStreak
+            habit.lastCompletedDate = habit.previousLastCompletedDate
+
+            val dailyCount = dailyCompletionCounts[today] ?: 0
+            when {
+                dailyCount <= 1 -> dailyCompletionCounts.remove(today)
+                else -> dailyCompletionCounts[today] = dailyCount - 1
+            }
+
+            persistHabits()
+            persistDailyCompletions()
+            return HabitToggleResult.UNCOMPLETED
         }
+
+        habit.previousStreakCount = habit.streakCount
+        habit.previousLastCompletedDate = habit.lastCompletedDate
 
         habit.streakCount = if (habit.lastCompletedDate == yesterdayKey()) {
             habit.streakCount + 1
@@ -92,7 +107,7 @@ object HabitRepository {
         persistHabits()
         persistDailyCompletions()
 
-        return CompleteHabitResult.COMPLETED
+        return HabitToggleResult.COMPLETED
     }
 
     fun hasCompletedToday(habit: Habit): Boolean = habit.lastCompletedDate == todayKey()
@@ -117,6 +132,8 @@ object HabitRepository {
                 put("note", habit.note)
                 put("streakCount", habit.streakCount)
                 put("lastCompletedDate", habit.lastCompletedDate)
+                put("previousStreakCount", habit.previousStreakCount)
+                put("previousLastCompletedDate", habit.previousLastCompletedDate)
             }
             array.put(jsonHabit)
         }
@@ -154,7 +171,9 @@ object HabitRepository {
                         title = title,
                         note = jsonHabit.optString("note", ""),
                         streakCount = jsonHabit.optInt("streakCount", 0).coerceAtLeast(0),
-                        lastCompletedDate = jsonHabit.optString("lastCompletedDate", "")
+                        lastCompletedDate = jsonHabit.optString("lastCompletedDate", ""),
+                        previousStreakCount = jsonHabit.optInt("previousStreakCount", 0).coerceAtLeast(0),
+                        previousLastCompletedDate = jsonHabit.optString("previousLastCompletedDate", "")
                     )
                 )
             }

@@ -49,7 +49,11 @@ class AddHabitFragment : Fragment() {
         habitTitleInput?.setText("")
         habitNoteInput?.setText("")
 
-        Snackbar.make(rootView, R.string.habit_added, Snackbar.LENGTH_SHORT).show()
+        val snackbar = Snackbar.make(rootView, R.string.habit_added, Snackbar.LENGTH_SHORT)
+        activity?.findViewById<View>(R.id.bottomNavigationView)?.let { navView ->
+            snackbar.setAnchorView(navView)
+        }
+        snackbar.show()
 
         (activity as? DashboardActivity)?.showHabitsTab()
     }

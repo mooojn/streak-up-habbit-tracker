@@ -41,8 +41,10 @@
     <string name="action_save">Save</string>
     <string name="action_delete">Delete</string>
     <string name="complete_today">Complete Today</string>
+    <string name="undo_complete">Undo Complete</string>
     <string name="completed_today">Completed Today</string>
     <string name="habit_completed_today">Habit marked complete for today.</string>
+    <string name="habit_uncompleted_today">Habit marked uncomplete for today.</string>
     <string name="habit_already_completed_today">This habit is already completed today.</string>
     <string name="habit_updated">Habit updated.</string>
     <string name="habit_deleted">Habit deleted.</string>
@@ -68,5 +70,3 @@
         <item quantity="other">Day %1$d, %2$d habits completed</item>
     </plurals>
 </resources>
-
-

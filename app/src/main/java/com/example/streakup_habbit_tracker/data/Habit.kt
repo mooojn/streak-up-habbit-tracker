@@ -7,5 +7,7 @@ data class Habit(
     var title: String,
     var note: String,
     var streakCount: Int = 0,
-    var lastCompletedDate: String = ""
+    var lastCompletedDate: String = "",
+    var previousStreakCount: Int = 0,
+    var previousLastCompletedDate: String = ""
 )

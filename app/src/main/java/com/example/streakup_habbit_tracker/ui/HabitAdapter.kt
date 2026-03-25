@@ -56,19 +56,19 @@ class HabitAdapter(private val actionListener: HabitActionListener) :
 
         val completedToday = HabitRepository.hasCompletedToday(habit)
         holder.completeHabitButton.text = if (completedToday) {
-            context.getString(R.string.completed_today)
+            context.getString(R.string.undo_complete)
         } else {
             context.getString(R.string.complete_today)
         }
-        holder.completeHabitButton.isEnabled = !completedToday
+        holder.completeHabitButton.isEnabled = true
 
         val buttonColor = if (completedToday) {
-            ContextCompat.getColor(context, R.color.brand_secondary)
+            ContextCompat.getColor(context, R.color.danger)
         } else {
             ContextCompat.getColor(context, R.color.brand_primary)
         }
         holder.completeHabitButton.backgroundTintList = ColorStateList.valueOf(buttonColor)
-        holder.completeHabitButton.alpha = if (completedToday) 0.82f else 1f
+        holder.completeHabitButton.alpha = 1f
 
         holder.editHabitButton.setOnClickListener { actionListener.onEdit(habit) }
         holder.deleteHabitButton.setOnClickListener { actionListener.onDelete(habit) }
