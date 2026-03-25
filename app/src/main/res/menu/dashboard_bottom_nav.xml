@@ -9,7 +9,12 @@
         android:icon="@android:drawable/ic_input_add"
         android:title="@string/title_add_habit" />
     <item
+        android:id="@+id/nav_tracker"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:title="@string/title_tracker" />
+    <item
         android:id="@+id/nav_profile"
         android:icon="@android:drawable/ic_menu_myplaces"
         android:title="@string/title_profile" />
 </menu>
+

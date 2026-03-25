@@ -7,6 +7,7 @@ import com.example.streakup_habbit_tracker.data.HabitRepository
 import com.example.streakup_habbit_tracker.ui.AddHabitFragment
 import com.example.streakup_habbit_tracker.ui.HabitsFragment
 import com.example.streakup_habbit_tracker.ui.ProfileFragment
+import com.example.streakup_habbit_tracker.ui.TrackerFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -51,10 +52,17 @@ class DashboardActivity : AppCompatActivity() {
                 fragment = AddHabitFragment()
                 titleRes = R.string.title_add_habit
             }
+
+            R.id.nav_tracker -> {
+                fragment = TrackerFragment()
+                titleRes = R.string.title_tracker
+            }
+
             R.id.nav_profile -> {
                 fragment = ProfileFragment()
                 titleRes = R.string.title_profile
             }
+
             else -> {
                 fragment = HabitsFragment()
                 titleRes = R.string.title_habits

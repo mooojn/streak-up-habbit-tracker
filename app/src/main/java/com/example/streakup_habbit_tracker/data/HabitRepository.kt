@@ -20,8 +20,10 @@ object HabitRepository {
     private const val PREFS_NAME = "streakup_prefs"
     private const val KEY_USER_NAME = "key_user_name"
     private const val KEY_HABITS = "key_habits"
+    private const val KEY_DAILY_COMPLETIONS = "key_daily_completions"
 
     private val habits = mutableListOf<Habit>()
+    private val dailyCompletionCounts = mutableMapOf<String, Int>()
     private val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
     private var preferences: SharedPreferences? = null
@@ -41,6 +43,7 @@ object HabitRepository {
         preferences = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         userNameBacking = preferences?.getString(KEY_USER_NAME, "").orEmpty()
         loadHabitsFromStorage()
+        loadDailyCompletionsFromStorage()
         isInitialized = true
     }
 
@@ -83,12 +86,19 @@ object HabitRepository {
             1
         }
         habit.lastCompletedDate = today
+
+        dailyCompletionCounts[today] = (dailyCompletionCounts[today] ?: 0) + 1
+
         persistHabits()
+        persistDailyCompletions()
 
         return CompleteHabitResult.COMPLETED
     }
 
     fun hasCompletedToday(habit: Habit): Boolean = habit.lastCompletedDate == todayKey()
+
+    @Synchronized
+    fun getCompletionCountByDate(dateKey: String): Int = dailyCompletionCounts[dateKey] ?: 0
 
     @Synchronized
     fun getHabitCount(): Int = habits.size
@@ -111,6 +121,15 @@ object HabitRepository {
             array.put(jsonHabit)
         }
         preferences?.edit()?.putString(KEY_HABITS, array.toString())?.apply()
+    }
+
+    @Synchronized
+    private fun persistDailyCompletions() {
+        val json = JSONObject()
+        dailyCompletionCounts.forEach { (dateKey, count) ->
+            json.put(dateKey, count)
+        }
+        preferences?.edit()?.putString(KEY_DAILY_COMPLETIONS, json.toString())?.apply()
     }
 
     @Synchronized
@@ -141,6 +160,28 @@ object HabitRepository {
             }
         } catch (_: Exception) {
             habits.clear()
+        }
+    }
+
+    @Synchronized
+    private fun loadDailyCompletionsFromStorage() {
+        dailyCompletionCounts.clear()
+
+        val rawData = preferences?.getString(KEY_DAILY_COMPLETIONS, null) ?: return
+        if (rawData.isBlank()) return
+
+        try {
+            val json = JSONObject(rawData)
+            val keys = json.keys()
+            while (keys.hasNext()) {
+                val key = keys.next()
+                val value = json.optInt(key, 0)
+                if (value > 0) {
+                    dailyCompletionCounts[key] = value
+                }
+            }
+        } catch (_: Exception) {
+            dailyCompletionCounts.clear()
         }
     }
 

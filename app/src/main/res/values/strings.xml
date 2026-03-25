@@ -10,8 +10,21 @@
     <string name="error_name_required">Please enter your name to continue.</string>
     <string name="title_habits">My Habits</string>
     <string name="title_add_habit">Add Habit</string>
+    <string name="title_tracker">Tracker</string>
     <string name="title_profile">Profile</string>
     <string name="habits_intro">Small daily actions create big results.</string>
+    <string name="tracker_intro">Monthly consistency map. Darker cells mean more habits completed on that day.</string>
+    <string name="tracker_previous">&lt;</string>
+    <string name="tracker_next">&gt;</string>
+    <string name="tracker_day_sun">S</string>
+    <string name="tracker_day_mon">M</string>
+    <string name="tracker_day_tue">Tu</string>
+    <string name="tracker_day_wed">W</string>
+    <string name="tracker_day_thu">Th</string>
+    <string name="tracker_day_fri">F</string>
+    <string name="tracker_day_sat">S</string>
+    <string name="tracker_legend_less">Less</string>
+    <string name="tracker_legend_more">More</string>
     <string name="empty_habits">No habits added yet. Use Add Habit to create your first streak.</string>
     <string name="label_habit_title">Habit Name</string>
     <string name="hint_habit_title">Read 20 pages</string>
@@ -49,4 +62,11 @@
         <item quantity="one">Streak: %1$d day</item>
         <item quantity="other">Streak: %1$d days</item>
     </plurals>
+
+    <plurals name="tracker_day_completion_content">
+        <item quantity="one">Day %1$d, %2$d habit completed</item>
+        <item quantity="other">Day %1$d, %2$d habits completed</item>
+    </plurals>
 </resources>
+
+
