@@ -17,6 +17,7 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        HabitRepository.initialize(applicationContext)
         setContentView(R.layout.activity_dashboard)
 
         dashboardToolbar = findViewById(R.id.dashboardToolbar)

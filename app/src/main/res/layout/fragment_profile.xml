@@ -74,6 +74,26 @@
                         android:text="@string/profile_subtitle"
                         android:textColor="@color/text_secondary"
                         android:textSize="14sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/editNameButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:minWidth="0dp"
+                        android:minHeight="0dp"
+                        android:paddingStart="12dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="8dp"
+                        android:text="@string/action_edit_name"
+                        android:textAllCaps="false"
+                        android:textColor="@color/brand_primary"
+                        android:textSize="13sp"
+                        app:backgroundTint="@color/surface_app"
+                        app:cornerRadius="10dp"
+                        app:strokeColor="@color/stroke_soft"
+                        app:strokeWidth="1dp" />
                 </LinearLayout>
             </LinearLayout>
 

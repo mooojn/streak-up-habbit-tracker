@@ -21,6 +21,9 @@
     <string name="action_add_habit">Add Habit</string>
     <string name="habit_added">Habit added successfully.</string>
     <string name="edit_habit_title">Edit Habit</string>
+    <string name="edit_name_title">Edit Name</string>
+    <string name="action_edit_name">Edit Name</string>
+    <string name="name_updated">Name updated.</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_save">Save</string>
     <string name="action_delete">Delete</string>
