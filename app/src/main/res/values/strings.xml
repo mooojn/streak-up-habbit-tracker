@@ -1,3 +1,40 @@
 <resources>
-    <string name="app_name">StreakUp-Habbit-Tracker</string>
+    <string name="app_name">StreakUp Habit Tracker</string>
+    <string name="splash_title">StreakUp</string>
+    <string name="splash_subtitle">Build better habits one day at a time</string>
+    <string name="home_title">Welcome to your streak space</string>
+    <string name="home_subtitle">Tell us your name to personalize your dashboard.</string>
+    <string name="label_name">Your Name</string>
+    <string name="hint_name">e.g. Saliq</string>
+    <string name="action_start">Start Tracking</string>
+    <string name="error_name_required">Please enter your name to continue.</string>
+    <string name="title_habits">My Habits</string>
+    <string name="title_add_habit">Add Habit</string>
+    <string name="title_profile">Profile</string>
+    <string name="habits_intro">Small daily actions create big results.</string>
+    <string name="empty_habits">No habits added yet. Use Add Habit to create your first streak.</string>
+    <string name="label_habit_title">Habit Name</string>
+    <string name="hint_habit_title">Read 20 pages</string>
+    <string name="error_habit_title_required">Please enter a habit name.</string>
+    <string name="label_habit_note">Note</string>
+    <string name="hint_habit_note">Keep it short and realistic.</string>
+    <string name="action_add_habit">Add Habit</string>
+    <string name="habit_added">Habit added successfully.</string>
+    <string name="edit_habit_title">Edit Habit</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="habit_updated">Habit updated.</string>
+    <string name="habit_deleted">Habit deleted.</string>
+    <string name="delete_habit_title">Delete Habit</string>
+    <string name="delete_habit_message">Are you sure you want to delete this habit?</string>
+    <string name="profile_section_title">Your Profile</string>
+    <string name="profile_greeting">Hey, %1$s</string>
+    <string name="profile_subtitle">Keep showing up. Your streak grows with consistency.</string>
+    <string name="profile_stats_title">Progress Snapshot</string>
+
+    <plurals name="habit_count_summary">
+        <item quantity="one">%1$d habit in progress</item>
+        <item quantity="other">%1$d habits in progress</item>
+    </plurals>
 </resources>
