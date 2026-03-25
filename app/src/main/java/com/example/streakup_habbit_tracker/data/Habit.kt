@@ -5,5 +5,7 @@ import java.util.UUID
 data class Habit(
     val id: String = UUID.randomUUID().toString(),
     var title: String,
-    var note: String
+    var note: String,
+    var streakCount: Int = 0,
+    var lastCompletedDate: String = ""
 )

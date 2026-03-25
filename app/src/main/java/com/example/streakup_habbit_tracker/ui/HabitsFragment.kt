@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,6 +44,10 @@ class HabitsFragment : Fragment() {
             override fun onDelete(habit: Habit) {
                 showDeleteConfirmation(habit)
             }
+
+            override fun onCompleteToday(habit: Habit) {
+                completeHabitForToday(habit)
+            }
         })
 
         habitsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -60,6 +65,24 @@ class HabitsFragment : Fragment() {
         emptyStateText?.isVisible = habits.isEmpty()
     }
 
+    private fun completeHabitForToday(habit: Habit) {
+        when (HabitRepository.completeHabitForToday(habit.id)) {
+            HabitRepository.CompleteHabitResult.COMPLETED -> {
+                refreshHabits()
+                Toast.makeText(requireContext(), R.string.habit_completed_today, Toast.LENGTH_SHORT).show()
+            }
+
+            HabitRepository.CompleteHabitResult.ALREADY_COMPLETED -> {
+                Toast.makeText(requireContext(), R.string.habit_already_completed_today, Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            HabitRepository.CompleteHabitResult.NOT_FOUND -> {
+                refreshHabits()
+            }
+        }
+    }
+
     private fun showEditHabitDialog(habit: Habit) {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_habit, null)
         val titleInput: TextInputEditText = dialogView.findViewById(R.id.editHabitTitleInput)
@@ -68,28 +91,34 @@ class HabitsFragment : Fragment() {
         titleInput.setText(habit.title)
         noteInput.setText(habit.note)
 
-        MaterialAlertDialogBuilder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.edit_habit_title)
             .setView(dialogView)
             .setNegativeButton(R.string.action_cancel, null)
-            .setPositiveButton(R.string.action_save) { _, _ ->
+            .setPositiveButton(R.string.action_save, null)
+            .create()
+
+        dialog.setOnShowListener {
+            val width = (resources.displayMetrics.widthPixels * 0.9f).toInt()
+            dialog.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val newTitle = titleInput.text?.toString()?.trim().orEmpty()
                 val newNote = noteInput.text?.toString()?.trim().orEmpty()
 
                 if (newTitle.isBlank()) {
-                    Toast.makeText(
-                        requireContext(),
-                        R.string.error_habit_title_required,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@setPositiveButton
+                    titleInput.error = getString(R.string.error_habit_title_required)
+                    return@setOnClickListener
                 }
 
                 HabitRepository.updateHabit(habit.id, newTitle, newNote)
                 refreshHabits()
                 Toast.makeText(requireContext(), R.string.habit_updated, Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
             }
-            .show()
+        }
+
+        dialog.show()
     }
 
     private fun showDeleteConfirmation(habit: Habit) {

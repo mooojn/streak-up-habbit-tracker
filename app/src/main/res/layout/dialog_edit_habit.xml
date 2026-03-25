@@ -4,12 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="4dp">
+    android:paddingTop="6dp"
+    android:paddingStart="2dp"
+    android:paddingEnd="2dp">
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:boxBackgroundColor="@color/surface_card_alt"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusTopStart="12dp"
         app:hintEnabled="false">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -18,7 +25,9 @@
             android:layout_height="wrap_content"
             android:hint="@string/label_habit_title"
             android:inputType="textCapSentences"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -26,6 +35,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        app:boxBackgroundColor="@color/surface_card_alt"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusTopStart="12dp"
         app:hintEnabled="false">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -35,7 +49,10 @@
             android:gravity="top"
             android:hint="@string/label_habit_note"
             android:inputType="textMultiLine"
-            android:minLines="2" />
+            android:maxLines="3"
+            android:minLines="1"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

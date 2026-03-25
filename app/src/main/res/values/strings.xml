@@ -24,6 +24,10 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_save">Save</string>
     <string name="action_delete">Delete</string>
+    <string name="complete_today">Complete Today</string>
+    <string name="completed_today">Completed Today</string>
+    <string name="habit_completed_today">Habit marked complete for today.</string>
+    <string name="habit_already_completed_today">This habit is already completed today.</string>
     <string name="habit_updated">Habit updated.</string>
     <string name="habit_deleted">Habit deleted.</string>
     <string name="delete_habit_title">Delete Habit</string>
@@ -36,5 +40,10 @@
     <plurals name="habit_count_summary">
         <item quantity="one">%1$d habit in progress</item>
         <item quantity="other">%1$d habits in progress</item>
+    </plurals>
+
+    <plurals name="streak_days">
+        <item quantity="one">Streak: %1$d day</item>
+        <item quantity="other">Streak: %1$d days</item>
     </plurals>
 </resources>
