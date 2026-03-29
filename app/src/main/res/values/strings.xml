@@ -12,6 +12,8 @@
     <string name="title_add_habit">Add Habit</string>
     <string name="title_tracker">Tracker</string>
     <string name="title_profile">Profile</string>
+    <string name="habits_section_eyebrow">Today\'s focus</string>
+    <string name="habits_section_title">Build momentum</string>
     <string name="habits_intro">Small daily actions create big results.</string>
     <string name="tracker_intro">Monthly consistency map. Darker cells mean more habits completed on that day.</string>
     <string name="tracker_previous">&lt;</string>
@@ -40,6 +42,7 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_save">Save</string>
     <string name="action_delete">Delete</string>
+    <string name="select_habit">Select habit</string>
     <string name="complete_today">Complete Today</string>
     <string name="undo_complete">Undo Complete</string>
     <string name="completed_today">Completed Today</string>
@@ -60,6 +63,11 @@
         <item quantity="other">%1$d habits in progress</item>
     </plurals>
 
+    <plurals name="habits_selection_summary">
+        <item quantity="one">%1$d habit selected for quick completion</item>
+        <item quantity="other">%1$d habits selected for quick completion</item>
+    </plurals>
+
     <plurals name="streak_days">
         <item quantity="one">Streak: %1$d day</item>
         <item quantity="other">Streak: %1$d days</item>
@@ -68,5 +76,20 @@
     <plurals name="tracker_day_completion_content">
         <item quantity="one">Day %1$d, %2$d habit completed</item>
         <item quantity="other">Day %1$d, %2$d habits completed</item>
+    </plurals>
+
+    <plurals name="complete_selected_habits">
+        <item quantity="one">Complete 1 selected habit</item>
+        <item quantity="other">Complete %1$d selected habits</item>
+    </plurals>
+
+    <plurals name="habits_completed_today">
+        <item quantity="one">%1$d selected habit marked complete for today.</item>
+        <item quantity="other">%1$d selected habits marked complete for today.</item>
+    </plurals>
+
+    <plurals name="habits_already_completed_today">
+        <item quantity="one">The selected habit was already completed today.</item>
+        <item quantity="other">The selected habits were already completed today.</item>
     </plurals>
 </resources>

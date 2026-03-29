@@ -110,6 +110,37 @@ object HabitRepository {
         return HabitToggleResult.COMPLETED
     }
 
+    @Synchronized
+    fun completeHabitsForToday(habitIds: Set<String>): Int {
+        if (habitIds.isEmpty()) return 0
+
+        val today = todayKey()
+        val yesterday = yesterdayKey()
+        var completedCount = 0
+        habitIds.forEach { habitId ->
+            val habit = habits.find { it.id == habitId } ?: return@forEach
+            if (habit.lastCompletedDate == today) return@forEach
+
+            habit.previousStreakCount = habit.streakCount
+            habit.previousLastCompletedDate = habit.lastCompletedDate
+            habit.streakCount = if (habit.lastCompletedDate == yesterday) {
+                habit.streakCount + 1
+            } else {
+                1
+            }
+            habit.lastCompletedDate = today
+            dailyCompletionCounts[today] = (dailyCompletionCounts[today] ?: 0) + 1
+            completedCount += 1
+        }
+
+        if (completedCount > 0) {
+            persistHabits()
+            persistDailyCompletions()
+        }
+
+        return completedCount
+    }
+
     fun hasCompletedToday(habit: Habit): Boolean = habit.lastCompletedDate == todayKey()
 
     @Synchronized

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/habitCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
     app:cardBackgroundColor="@color/surface_card"
-    app:cardCornerRadius="18dp"
+    app:cardCornerRadius="22dp"
     app:cardElevation="0dp"
     app:strokeColor="@color/stroke_soft"
     app:strokeWidth="1dp">
@@ -22,20 +23,30 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
+            <CheckBox
+                android:id="@+id/selectHabitCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:buttonTint="@color/brand_primary"
+                android:contentDescription="@string/select_habit"
+                android:minWidth="0dp"
+                android:minHeight="0dp" />
+
             <TextView
                 android:id="@+id/habitTitleText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/text_primary"
-                android:textSize="18sp"
+                android:textSize="19sp"
                 android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/editHabitButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@drawable/bg_habit_icon_button"
                 android:contentDescription="@string/edit_habit_title"
                 android:padding="9dp"
                 android:src="@android:drawable/ic_menu_edit"
@@ -45,7 +56,7 @@
                 android:id="@+id/deleteHabitButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@drawable/bg_habit_icon_button"
                 android:contentDescription="@string/action_delete"
                 android:padding="9dp"
                 android:src="@android:drawable/ic_menu_delete"
@@ -57,6 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:lineSpacingExtra="2dp"
             android:textColor="@color/text_secondary"
             android:textSize="14sp" />
 
@@ -73,7 +85,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/brand_secondary"
-                android:textSize="13sp"
+                android:textSize="12sp"
+                android:textAllCaps="true"
                 android:textStyle="bold" />
 
             <com.google.android.material.button.MaterialButton
@@ -90,6 +103,7 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="13sp"
+                app:backgroundTint="@color/brand_primary"
                 app:cornerRadius="12dp"
                 app:iconPadding="0dp" />
         </LinearLayout>

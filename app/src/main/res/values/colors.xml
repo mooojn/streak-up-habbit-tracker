@@ -6,10 +6,13 @@
     <color name="surface_app">#F4F8FF</color>
     <color name="surface_card">#FFFFFFFF</color>
     <color name="surface_card_alt">#F8FAFC</color>
+    <color name="surface_selected">#EAF2FF</color>
+    <color name="surface_success">#ECFDF5</color>
     <color name="text_primary">#0F172A</color>
     <color name="text_secondary">#475569</color>
     <color name="stroke_soft">#D8E2F1</color>
     <color name="danger">#DC2626</color>
+    <color name="success">#059669</color>
     <color name="bottom_nav_unselected">#64748B</color>
     <color name="tracker_level_0">#E9EFF8</color>
     <color name="tracker_level_1">#CFE0FA</color>

@@ -15,12 +15,16 @@ import com.example.streakup_habbit_tracker.R
 import com.example.streakup_habbit_tracker.data.Habit
 import com.example.streakup_habbit_tracker.data.HabitRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 
 class HabitsFragment : Fragment() {
 
     private var habitAdapter: HabitAdapter? = null
     private var emptyStateText: TextView? = null
+    private var bulkCompleteButton: MaterialButton? = null
+    private var habitsSummaryText: TextView? = null
+    private var currentHabitCount: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +39,8 @@ class HabitsFragment : Fragment() {
 
         val habitsRecyclerView: RecyclerView = view.findViewById(R.id.habitsRecyclerView)
         emptyStateText = view.findViewById(R.id.emptyStateText)
+        bulkCompleteButton = view.findViewById(R.id.bulkCompleteButton)
+        habitsSummaryText = view.findViewById(R.id.habitsSummaryText)
 
         habitAdapter = HabitAdapter(object : HabitAdapter.HabitActionListener {
             override fun onEdit(habit: Habit) {
@@ -48,10 +54,17 @@ class HabitsFragment : Fragment() {
             override fun onCompleteToday(habit: Habit) {
                 toggleHabitCompletion(habit)
             }
+
+            override fun onSelectionChanged(selectedCount: Int) {
+                updateBulkCompleteButton(selectedCount)
+            }
         })
 
         habitsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         habitsRecyclerView.adapter = habitAdapter
+        bulkCompleteButton?.setOnClickListener {
+            completeSelectedHabits()
+        }
     }
 
     override fun onResume() {
@@ -61,8 +74,38 @@ class HabitsFragment : Fragment() {
 
     private fun refreshHabits() {
         val habits = HabitRepository.getHabits()
+        currentHabitCount = habits.size
         habitAdapter?.setHabits(habits)
         emptyStateText?.isVisible = habits.isEmpty()
+        updateHeaderSummary(habitAdapter?.getSelectedHabitIds()?.size ?: 0)
+    }
+
+    private fun updateBulkCompleteButton(selectedCount: Int) {
+        val button = bulkCompleteButton ?: return
+        button.isVisible = selectedCount > 0
+        button.text = resources.getQuantityString(
+            R.plurals.complete_selected_habits,
+            selectedCount,
+            selectedCount
+        )
+        updateHeaderSummary(selectedCount)
+    }
+
+    private fun updateHeaderSummary(selectedCount: Int) {
+        val summaryText = habitsSummaryText ?: return
+        summaryText.text = if (selectedCount > 0) {
+            resources.getQuantityString(
+                R.plurals.habits_selection_summary,
+                selectedCount,
+                selectedCount
+            )
+        } else {
+            resources.getQuantityString(
+                R.plurals.habit_count_summary,
+                currentHabitCount,
+                currentHabitCount
+            )
+        }
     }
 
     private fun toggleHabitCompletion(habit: Habit) {
@@ -81,6 +124,25 @@ class HabitsFragment : Fragment() {
                 refreshHabits()
             }
         }
+    }
+
+    private fun completeSelectedHabits() {
+        val selectedHabitIds = habitAdapter?.getSelectedHabitIds().orEmpty()
+        val completedCount = HabitRepository.completeHabitsForToday(selectedHabitIds)
+        refreshHabits()
+        habitAdapter?.clearSelection()
+
+        val messageRes = if (completedCount > 0) {
+            R.plurals.habits_completed_today
+        } else {
+            R.plurals.habits_already_completed_today
+        }
+        val quantity = if (completedCount > 0) completedCount else selectedHabitIds.size
+        Toast.makeText(
+            requireContext(),
+            resources.getQuantityString(messageRes, quantity, quantity),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun showEditHabitDialog(habit: Habit) {
