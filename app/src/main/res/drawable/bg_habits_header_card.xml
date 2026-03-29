@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/surface_card" />
+            <corners android:radius="24dp" />
+        </shape>
+    </item>
+
+    <item
+        android:gravity="end|top"
+        android:top="-24dp"
+        android:right="-16dp">
+        <shape android:shape="oval">
+            <size
+                android:width="140dp"
+                android:height="140dp" />
+            <solid android:color="@color/header_glow" />
+        </shape>
+    </item>
+
+    <item
+        android:gravity="start|bottom"
+        android:bottom="-34dp"
+        android:left="-18dp">
+        <shape android:shape="oval">
+            <size
+                android:width="110dp"
+                android:height="110dp" />
+            <solid android:color="@color/header_glow_soft" />
+        </shape>
+    </item>
+</layer-list>

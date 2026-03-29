@@ -87,6 +87,25 @@ class HabitAdapter(private val actionListener: HabitActionListener) :
         holder.habitCard.strokeColor = cardStrokeColor
         holder.habitCard.strokeWidth = if (isSelected) 3 else 1
 
+        holder.habitStatusText.text = when {
+            completedToday -> context.getString(R.string.habit_status_completed)
+            isSelected -> context.getString(R.string.habit_status_selected)
+            else -> context.getString(R.string.habit_status_ready)
+        }
+        val statusTextColor = when {
+            completedToday -> ContextCompat.getColor(context, R.color.success)
+            isSelected -> ContextCompat.getColor(context, R.color.brand_primary_dark)
+            else -> ContextCompat.getColor(context, R.color.brand_primary_dark)
+        }
+        holder.habitStatusText.setTextColor(statusTextColor)
+        holder.habitStatusText.backgroundTintList = ColorStateList.valueOf(
+            when {
+                completedToday -> ContextCompat.getColor(context, R.color.surface_success)
+                isSelected -> ContextCompat.getColor(context, R.color.surface_selected)
+                else -> ContextCompat.getColor(context, R.color.surface_app)
+            }
+        )
+
         holder.completeHabitButton.text = if (completedToday) {
             context.getString(R.string.undo_complete)
         } else {
@@ -132,6 +151,7 @@ class HabitAdapter(private val actionListener: HabitActionListener) :
         val selectHabitCheckbox: CheckBox = itemView.findViewById(R.id.selectHabitCheckbox)
         val habitTitleText: TextView = itemView.findViewById(R.id.habitTitleText)
         val habitNoteText: TextView = itemView.findViewById(R.id.habitNoteText)
+        val habitStatusText: TextView = itemView.findViewById(R.id.habitStatusText)
         val habitStreakText: TextView = itemView.findViewById(R.id.habitStreakText)
         val editHabitButton: ImageButton = itemView.findViewById(R.id.editHabitButton)
         val deleteHabitButton: ImageButton = itemView.findViewById(R.id.deleteHabitButton)

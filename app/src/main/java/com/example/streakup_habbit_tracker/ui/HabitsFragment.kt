@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -21,7 +21,7 @@ import com.google.android.material.textfield.TextInputEditText
 class HabitsFragment : Fragment() {
 
     private var habitAdapter: HabitAdapter? = null
-    private var emptyStateText: TextView? = null
+    private var emptyStateText: View? = null
     private var bulkCompleteButton: MaterialButton? = null
     private var habitsSummaryText: TextView? = null
     private var currentHabitCount: Int = 0
