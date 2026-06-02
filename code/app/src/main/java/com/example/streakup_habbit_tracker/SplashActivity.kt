@@ -6,6 +6,8 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.example.streakup_habbit_tracker.data.HabitRepository
+import com.example.streakup_habbit_tracker.reminders.StreakReminderNotifier
+import com.example.streakup_habbit_tracker.reminders.StreakReminderScheduler
 
 class SplashActivity : AppCompatActivity() {
 
@@ -24,6 +26,8 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         HabitRepository.initialize(applicationContext)
+        StreakReminderNotifier.ensureChannel(applicationContext)
+        StreakReminderScheduler.schedule(applicationContext)
         setContentView(R.layout.activity_splash)
         handler.postDelayed(navigateRunnable, 1400L)
     }
