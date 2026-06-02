@@ -13,6 +13,10 @@
         android:icon="@android:drawable/ic_menu_my_calendar"
         android:title="@string/title_tracker" />
     <item
+        android:id="@+id/nav_ai_insights"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="@string/title_ai_insights" />
+    <item
         android:id="@+id/nav_profile"
         android:icon="@android:drawable/ic_menu_myplaces"
         android:title="@string/title_profile" />
