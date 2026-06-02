@@ -54,8 +54,7 @@ class TrackerHeatmapAdapter : RecyclerView.Adapter<TrackerHeatmapAdapter.Tracker
             holder.dayCard.strokeWidth = 2
             holder.dayCard.strokeColor = ContextCompat.getColor(context, R.color.brand_secondary)
         } else {
-            holder.dayCard.strokeWidth = 1
-            holder.dayCard.strokeColor = ContextCompat.getColor(context, R.color.stroke_soft)
+            holder.dayCard.strokeWidth = 0
         }
 
         val dayNumber = cell.dayLabel.toIntOrNull() ?: 0

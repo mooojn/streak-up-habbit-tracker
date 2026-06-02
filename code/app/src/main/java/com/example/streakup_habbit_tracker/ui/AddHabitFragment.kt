@@ -12,6 +12,8 @@ import com.example.streakup_habbit_tracker.data.HabitRepository
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.switchmaterial.SwitchMaterial
+import android.widget.LinearLayout
 
 class AddHabitFragment : Fragment() {
 
@@ -32,6 +34,13 @@ class AddHabitFragment : Fragment() {
         habitTitleInput = view.findViewById(R.id.habitTitleInput)
         habitNoteInput = view.findViewById(R.id.habitNoteInput)
         val addHabitButton: MaterialButton = view.findViewById(R.id.addHabitButton)
+        
+        val habitFlexibleSwitch: SwitchMaterial = view.findViewById(R.id.habitFlexibleSwitch)
+        val flexibleOptionsLayout: LinearLayout = view.findViewById(R.id.flexibleOptionsLayout)
+
+        habitFlexibleSwitch.setOnCheckedChangeListener { _, isChecked ->
+            flexibleOptionsLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
 
         addHabitButton.setOnClickListener { addHabit(view) }
     }
@@ -45,9 +54,16 @@ class AddHabitFragment : Fragment() {
             return
         }
 
-        HabitRepository.addHabit(title, note)
+        val isFlexible = rootView.findViewById<SwitchMaterial>(R.id.habitFlexibleSwitch).isChecked
+        val targetValue = rootView.findViewById<TextInputEditText>(R.id.habitTargetInput).text?.toString()?.toIntOrNull() ?: 1
+        val unit = rootView.findViewById<TextInputEditText>(R.id.habitUnitInput).text?.toString()?.trim().orEmpty()
+
+        HabitRepository.addHabit(title, note, isFlexible, targetValue, unit)
         habitTitleInput?.setText("")
         habitNoteInput?.setText("")
+        rootView.findViewById<TextInputEditText>(R.id.habitTargetInput).setText("")
+        rootView.findViewById<TextInputEditText>(R.id.habitUnitInput).setText("")
+        rootView.findViewById<SwitchMaterial>(R.id.habitFlexibleSwitch).isChecked = false
 
         val snackbar = Snackbar.make(rootView, R.string.habit_added, Snackbar.LENGTH_SHORT)
         activity?.findViewById<View>(R.id.bottomNavigationView)?.let { navView ->

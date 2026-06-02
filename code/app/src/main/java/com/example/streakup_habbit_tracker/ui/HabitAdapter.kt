@@ -24,6 +24,7 @@ class HabitAdapter(private val actionListener: HabitActionListener) :
         fun onDelete(habit: Habit)
         fun onCompleteToday(habit: Habit)
         fun onSelectionChanged(selectedCount: Int)
+        fun onProgressChanged(habit: Habit)
     }
 
     private val habits = mutableListOf<Habit>()
@@ -121,6 +122,27 @@ class HabitAdapter(private val actionListener: HabitActionListener) :
         holder.completeHabitButton.backgroundTintList = ColorStateList.valueOf(buttonColor)
         holder.completeHabitButton.alpha = 1f
 
+        if (habit.isFlexible) {
+            holder.completeHabitButton.visibility = View.GONE
+            holder.flexibleProgressLayout.visibility = View.VISIBLE
+            holder.flexibleProgressText.text = "${habit.currentValue} / ${habit.targetValue} ${habit.unit}"
+            
+            holder.incrementHabitButton.setOnClickListener {
+                if (HabitRepository.incrementHabitProgress(habit.id)) {
+                    actionListener.onProgressChanged(habit)
+                }
+            }
+            holder.decrementHabitButton.setOnClickListener {
+                if (HabitRepository.decrementHabitProgress(habit.id)) {
+                    actionListener.onProgressChanged(habit)
+                }
+            }
+        } else {
+            holder.completeHabitButton.visibility = View.VISIBLE
+            holder.flexibleProgressLayout.visibility = View.GONE
+            holder.completeHabitButton.setOnClickListener { actionListener.onCompleteToday(habit) }
+        }
+
         holder.selectHabitCheckbox.setOnCheckedChangeListener(null)
         holder.selectHabitCheckbox.isChecked = isSelected
         holder.selectHabitCheckbox.setOnCheckedChangeListener { _, isChecked ->
@@ -129,7 +151,6 @@ class HabitAdapter(private val actionListener: HabitActionListener) :
 
         holder.editHabitButton.setOnClickListener { actionListener.onEdit(habit) }
         holder.deleteHabitButton.setOnClickListener { actionListener.onDelete(habit) }
-        holder.completeHabitButton.setOnClickListener { actionListener.onCompleteToday(habit) }
         holder.itemView.setOnClickListener {
             holder.selectHabitCheckbox.isChecked = !holder.selectHabitCheckbox.isChecked
         }
@@ -156,5 +177,9 @@ class HabitAdapter(private val actionListener: HabitActionListener) :
         val editHabitButton: ImageButton = itemView.findViewById(R.id.editHabitButton)
         val deleteHabitButton: ImageButton = itemView.findViewById(R.id.deleteHabitButton)
         val completeHabitButton: MaterialButton = itemView.findViewById(R.id.completeHabitButton)
+        val flexibleProgressLayout: View = itemView.findViewById(R.id.flexibleProgressLayout)
+        val flexibleProgressText: TextView = itemView.findViewById(R.id.flexibleProgressText)
+        val decrementHabitButton: MaterialButton = itemView.findViewById(R.id.decrementHabitButton)
+        val incrementHabitButton: MaterialButton = itemView.findViewById(R.id.incrementHabitButton)
     }
 }

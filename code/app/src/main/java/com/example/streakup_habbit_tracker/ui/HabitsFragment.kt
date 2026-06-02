@@ -17,6 +17,8 @@ import com.example.streakup_habbit_tracker.data.HabitRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.switchmaterial.SwitchMaterial
+import android.widget.LinearLayout
 
 class HabitsFragment : Fragment() {
 
@@ -57,6 +59,10 @@ class HabitsFragment : Fragment() {
 
             override fun onSelectionChanged(selectedCount: Int) {
                 updateBulkCompleteButton(selectedCount)
+            }
+
+            override fun onProgressChanged(habit: Habit) {
+                refreshHabits()
             }
         })
 
@@ -149,9 +155,21 @@ class HabitsFragment : Fragment() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_habit, null)
         val titleInput: TextInputEditText = dialogView.findViewById(R.id.editHabitTitleInput)
         val noteInput: TextInputEditText = dialogView.findViewById(R.id.editHabitNoteInput)
+        val flexibleSwitch: SwitchMaterial = dialogView.findViewById(R.id.editHabitFlexibleSwitch)
+        val flexibleOptionsLayout: LinearLayout = dialogView.findViewById(R.id.editFlexibleOptionsLayout)
+        val targetInput: TextInputEditText = dialogView.findViewById(R.id.editHabitTargetInput)
+        val unitInput: TextInputEditText = dialogView.findViewById(R.id.editHabitUnitInput)
 
         titleInput.setText(habit.title)
         noteInput.setText(habit.note)
+        flexibleSwitch.isChecked = habit.isFlexible
+        flexibleOptionsLayout.visibility = if (habit.isFlexible) View.VISIBLE else View.GONE
+        targetInput.setText(habit.targetValue.toString())
+        unitInput.setText(habit.unit)
+
+        flexibleSwitch.setOnCheckedChangeListener { _, isChecked ->
+            flexibleOptionsLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.edit_habit_title)
@@ -173,7 +191,11 @@ class HabitsFragment : Fragment() {
                     return@setOnClickListener
                 }
 
-                HabitRepository.updateHabit(habit.id, newTitle, newNote)
+                val isFlexible = flexibleSwitch.isChecked
+                val targetValue = targetInput.text?.toString()?.toIntOrNull() ?: 1
+                val unit = unitInput.text?.toString()?.trim().orEmpty()
+
+                HabitRepository.updateHabit(habit.id, newTitle, newNote, isFlexible, targetValue, unit)
                 refreshHabits()
                 Toast.makeText(requireContext(), R.string.habit_updated, Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
