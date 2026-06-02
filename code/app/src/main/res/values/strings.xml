@@ -10,8 +10,10 @@
     <string name="error_name_required">Please enter your name to continue.</string>
     <string name="title_habits">My Habits</string>
     <string name="title_add_habit">Add Habit</string>
-    <string name="title_tracker">Tracker</string>
+    <string name="title_tracker">Progress</string>
     <string name="title_profile">Profile</string>
+    <string name="title_ai_insights">AI Insights</string>
+    <string name="title_friends">Friends</string>
     <string name="habits_section_eyebrow">Today\'s focus</string>
     <string name="habits_section_title">Build momentum</string>
     <string name="habits_intro">Small daily actions create big results.</string>
@@ -61,6 +63,13 @@
     <string name="profile_greeting">Hey, %1$s</string>
     <string name="profile_subtitle">Keep showing up. Your streak grows with consistency.</string>
     <string name="profile_stats_title">Progress Snapshot</string>
+    <string name="notification_permission_title">Enable streak reminders</string>
+    <string name="notification_permission_message">Allow notifications so StreakUp can remind you before your streak ends.</string>
+    <string name="action_allow">Allow</string>
+    <string name="reminder_channel_name">Streak reminders</string>
+    <string name="reminder_channel_description">Reminders for habits that are about to lose their streak.</string>
+    <string name="reminder_notification_title">Keep your streak alive</string>
+    <string name="reminder_notification_single">Your %1$s streak is about to end today.</string>
 
     <plurals name="habit_count_summary">
         <item quantity="one">%1$d habit in progress</item>
@@ -95,5 +104,10 @@
     <plurals name="habits_already_completed_today">
         <item quantity="one">The selected habit was already completed today.</item>
         <item quantity="other">The selected habits were already completed today.</item>
+    </plurals>
+
+    <plurals name="reminder_notification_multiple">
+        <item quantity="one">%1$d habit is about to lose its streak: %2$s.</item>
+        <item quantity="other">%1$d habits are about to lose their streaks: %2$s.</item>
     </plurals>
 </resources>

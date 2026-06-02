@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand_primary">#60A5FA</color>
+    <color name="brand_primary_dark">#3B82F6</color>
+    <color name="brand_secondary">#2DD4BF</color>
+    <color name="surface_app">#0F172A</color>
+    <color name="surface_card">#1E293B</color>
+    <color name="surface_card_alt">#263245</color>
+    <color name="surface_selected">#1E3A5F</color>
+    <color name="surface_success">#064E3B</color>
+    <color name="header_glow">#2060A5FA</color>
+    <color name="header_glow_soft">#332DD4BF</color>
+    <color name="text_primary">#F1F5F9</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="stroke_soft">#334155</color>
+    <color name="danger">#F87171</color>
+    <color name="success">#34D399</color>
+    <color name="bottom_nav_unselected">#64748B</color>
+    <color name="tracker_level_0">#21262D</color>
+    <color name="tracker_level_1">#0E4429</color>
+    <color name="tracker_level_2">#006D32</color>
+    <color name="tracker_level_3">#26A641</color>
+    <color name="tracker_level_4">#39D353</color>
+</resources>
