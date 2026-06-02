@@ -9,5 +9,9 @@ data class Habit(
     var streakCount: Int = 0,
     var lastCompletedDate: String = "",
     var previousStreakCount: Int = 0,
-    var previousLastCompletedDate: String = ""
+    var previousLastCompletedDate: String = "",
+    var isFlexible: Boolean = false,
+    var targetValue: Int = 1,
+    var currentValue: Int = 0,
+    var unit: String = ""
 )

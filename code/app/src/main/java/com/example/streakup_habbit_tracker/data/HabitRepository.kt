@@ -21,6 +21,8 @@ object HabitRepository {
     private const val KEY_USER_NAME = "key_user_name"
     private const val KEY_HABITS = "key_habits"
     private const val KEY_DAILY_COMPLETIONS = "key_daily_completions"
+    private const val KEY_NGROK_URL = "key_ngrok_url"
+    private const val KEY_DARK_MODE = "key_dark_mode"
 
     private val habits = mutableListOf<Habit>()
     private val dailyCompletionCounts = mutableMapOf<String, Int>()
@@ -29,6 +31,7 @@ object HabitRepository {
     private var preferences: SharedPreferences? = null
     private var isInitialized = false
     private var userNameBacking: String = ""
+    private var ngrokUrlBacking: String = ""
 
     var userName: String
         get() = userNameBacking
@@ -37,19 +40,48 @@ object HabitRepository {
             persistUserName()
         }
 
+    var ngrokUrl: String
+        get() = ngrokUrlBacking
+        set(value) {
+            ngrokUrlBacking = value.trim()
+            preferences?.edit()?.putString(KEY_NGROK_URL, ngrokUrlBacking)?.apply()
+        }
+
+    private const val KEY_REMINDER_HOUR = "key_reminder_hour"
+    private const val KEY_REMINDER_MINUTE = "key_reminder_minute"
+    private const val KEY_REMINDER_ENABLED = "key_reminder_enabled"
+
+    var reminderHour: Int
+        get() = preferences?.getInt(KEY_REMINDER_HOUR, 20) ?: 20
+        set(value) { preferences?.edit()?.putInt(KEY_REMINDER_HOUR, value)?.apply() }
+
+    var reminderMinute: Int
+        get() = preferences?.getInt(KEY_REMINDER_MINUTE, 0) ?: 0
+        set(value) { preferences?.edit()?.putInt(KEY_REMINDER_MINUTE, value)?.apply() }
+
+    var reminderEnabled: Boolean
+        get() = preferences?.getBoolean(KEY_REMINDER_ENABLED, true) ?: true
+        set(value) { preferences?.edit()?.putBoolean(KEY_REMINDER_ENABLED, value)?.apply() }
+
+    var darkMode: Int
+        // -1 = system default, 1 = night (dark), 2 = day (light)
+        get() = preferences?.getInt(KEY_DARK_MODE, -1) ?: -1
+        set(value) { preferences?.edit()?.putInt(KEY_DARK_MODE, value)?.apply() }
+
     fun initialize(context: Context) {
         if (isInitialized) return
 
         preferences = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         userNameBacking = preferences?.getString(KEY_USER_NAME, "").orEmpty()
+        ngrokUrlBacking = preferences?.getString(KEY_NGROK_URL, "").orEmpty()
         loadHabitsFromStorage()
         loadDailyCompletionsFromStorage()
         isInitialized = true
     }
 
     @Synchronized
-    fun addHabit(title: String, note: String) {
-        habits.add(Habit(title = title, note = note))
+    fun addHabit(title: String, note: String, isFlexible: Boolean = false, targetValue: Int = 1, unit: String = "") {
+        habits.add(Habit(title = title, note = note, isFlexible = isFlexible, targetValue = targetValue, unit = unit))
         persistHabits()
     }
 
@@ -63,10 +95,13 @@ object HabitRepository {
     }
 
     @Synchronized
-    fun updateHabit(habitId: String, newTitle: String, newNote: String): Boolean {
+    fun updateHabit(habitId: String, newTitle: String, newNote: String, isFlexible: Boolean = false, targetValue: Int = 1, unit: String = ""): Boolean {
         val existingHabit = habits.find { it.id == habitId } ?: return false
         existingHabit.title = newTitle
         existingHabit.note = newNote
+        existingHabit.isFlexible = isFlexible
+        existingHabit.targetValue = targetValue
+        existingHabit.unit = unit
         persistHabits()
         return true
     }
@@ -80,6 +115,7 @@ object HabitRepository {
             val restoredStreak = habit.previousStreakCount.coerceAtLeast(0)
             habit.streakCount = restoredStreak
             habit.lastCompletedDate = habit.previousLastCompletedDate
+            habit.currentValue = 0
 
             val dailyCount = dailyCompletionCounts[today] ?: 0
             when {
@@ -101,6 +137,9 @@ object HabitRepository {
             1
         }
         habit.lastCompletedDate = today
+        if (habit.isFlexible) {
+            habit.currentValue = habit.targetValue
+        }
 
         dailyCompletionCounts[today] = (dailyCompletionCounts[today] ?: 0) + 1
 
@@ -108,6 +147,50 @@ object HabitRepository {
         persistDailyCompletions()
 
         return HabitToggleResult.COMPLETED
+    }
+
+    @Synchronized
+    fun incrementHabitProgress(habitId: String): Boolean {
+        val habit = habits.find { it.id == habitId } ?: return false
+        if (!habit.isFlexible) return false
+        
+        val today = todayKey()
+        if (habit.lastCompletedDate != today && habit.lastCompletedDate != "") {
+            // It's a new day, current value should start from 0 if not completed today
+            if (habit.lastCompletedDate != today) {
+                habit.currentValue = 0
+            }
+        }
+        
+        if (habit.currentValue < habit.targetValue) {
+            habit.currentValue += 1
+            if (habit.currentValue == habit.targetValue) {
+                toggleHabitForToday(habitId)
+            } else {
+                persistHabits()
+            }
+        }
+        return true
+    }
+
+    @Synchronized
+    fun decrementHabitProgress(habitId: String): Boolean {
+        val habit = habits.find { it.id == habitId } ?: return false
+        if (!habit.isFlexible) return false
+        
+        val today = todayKey()
+        if (habit.lastCompletedDate == today && habit.currentValue == habit.targetValue) {
+            toggleHabitForToday(habitId)
+            habit.currentValue = habit.targetValue - 1
+            persistHabits()
+            return true
+        }
+        
+        if (habit.currentValue > 0) {
+            habit.currentValue -= 1
+            persistHabits()
+        }
+        return true
     }
 
     @Synchronized
@@ -149,6 +232,16 @@ object HabitRepository {
     @Synchronized
     fun getHabitCount(): Int = habits.size
 
+    @Synchronized
+    fun getBadges(): List<Badge> {
+        val maxStreak = habits.maxOfOrNull { it.streakCount } ?: 0
+        return listOf(
+            Badge("badge_7", "7-Day Warrior", "Maintain a 7-day streak on any habit", 7, maxStreak >= 7),
+            Badge("badge_30", "Monthly Master", "Maintain a 30-day streak on any habit", 30, maxStreak >= 30),
+            Badge("badge_100", "Century Club", "Maintain a 100-day streak on any habit", 100, maxStreak >= 100)
+        )
+    }
+
     private fun persistUserName() {
         preferences?.edit()?.putString(KEY_USER_NAME, userNameBacking)?.apply()
     }
@@ -165,6 +258,10 @@ object HabitRepository {
                 put("lastCompletedDate", habit.lastCompletedDate)
                 put("previousStreakCount", habit.previousStreakCount)
                 put("previousLastCompletedDate", habit.previousLastCompletedDate)
+                put("isFlexible", habit.isFlexible)
+                put("targetValue", habit.targetValue)
+                put("currentValue", habit.currentValue)
+                put("unit", habit.unit)
             }
             array.put(jsonHabit)
         }
@@ -204,7 +301,11 @@ object HabitRepository {
                         streakCount = jsonHabit.optInt("streakCount", 0).coerceAtLeast(0),
                         lastCompletedDate = jsonHabit.optString("lastCompletedDate", ""),
                         previousStreakCount = jsonHabit.optInt("previousStreakCount", 0).coerceAtLeast(0),
-                        previousLastCompletedDate = jsonHabit.optString("previousLastCompletedDate", "")
+                        previousLastCompletedDate = jsonHabit.optString("previousLastCompletedDate", ""),
+                        isFlexible = jsonHabit.optBoolean("isFlexible", false),
+                        targetValue = jsonHabit.optInt("targetValue", 1),
+                        currentValue = jsonHabit.optInt("currentValue", 0),
+                        unit = jsonHabit.optString("unit", "")
                     )
                 )
             }
