@@ -20,11 +20,13 @@ object HabitRepository {
     private const val PREFS_NAME = "streakup_prefs"
     private const val KEY_USER_NAME = "key_user_name"
     private const val KEY_HABITS = "key_habits"
+    private const val KEY_NOTES = "key_notes"
     private const val KEY_DAILY_COMPLETIONS = "key_daily_completions"
     private const val KEY_NGROK_URL = "key_ngrok_url"
     private const val KEY_DARK_MODE = "key_dark_mode"
 
     private val habits = mutableListOf<Habit>()
+    private val notes = mutableListOf<Note>()
     private val dailyCompletionCounts = mutableMapOf<String, Int>()
     private val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
@@ -75,6 +77,7 @@ object HabitRepository {
         userNameBacking = preferences?.getString(KEY_USER_NAME, "").orEmpty()
         ngrokUrlBacking = preferences?.getString(KEY_NGROK_URL, "").orEmpty()
         loadHabitsFromStorage()
+        loadNotesFromStorage()
         loadDailyCompletionsFromStorage()
         isInitialized = true
     }
@@ -87,6 +90,31 @@ object HabitRepository {
 
     @Synchronized
     fun getHabits(): List<Habit> = habits.map { it.copy(dailyNotes = it.dailyNotes.toMutableMap()) }
+
+    @Synchronized
+    fun addNote(title: String, body: String) {
+        notes.add(0, Note(title = title.trim(), body = body.trim()))
+        persistNotes()
+    }
+
+    @Synchronized
+    fun getNotes(): List<Note> = notes.map { it.copy() }
+
+    @Synchronized
+    fun updateNote(noteId: String, title: String, body: String): Boolean {
+        val note = notes.find { it.id == noteId } ?: return false
+        note.title = title.trim()
+        note.body = body.trim()
+        note.updatedAt = System.currentTimeMillis()
+        persistNotes()
+        return true
+    }
+
+    @Synchronized
+    fun deleteNote(noteId: String) {
+        notes.removeAll { it.id == noteId }
+        persistNotes()
+    }
 
     @Synchronized
     fun getDailyNote(habitId: String, date: String): String =
@@ -296,6 +324,22 @@ object HabitRepository {
     }
 
     @Synchronized
+    private fun persistNotes() {
+        val array = JSONArray()
+        notes.forEach { note ->
+            val jsonNote = JSONObject().apply {
+                put("id", note.id)
+                put("title", note.title)
+                put("body", note.body)
+                put("createdAt", note.createdAt)
+                put("updatedAt", note.updatedAt)
+            }
+            array.put(jsonNote)
+        }
+        preferences?.edit()?.putString(KEY_NOTES, array.toString())?.apply()
+    }
+
+    @Synchronized
     private fun loadHabitsFromStorage() {
         habits.clear()
 
@@ -363,6 +407,38 @@ object HabitRepository {
             }
         } catch (_: Exception) {
             dailyCompletionCounts.clear()
+        }
+    }
+
+    @Synchronized
+    private fun loadNotesFromStorage() {
+        notes.clear()
+
+        val rawNotes = preferences?.getString(KEY_NOTES, null) ?: return
+        if (rawNotes.isBlank()) return
+
+        try {
+            val array = JSONArray(rawNotes)
+            for (index in 0 until array.length()) {
+                val jsonNote = array.optJSONObject(index) ?: continue
+                val id = jsonNote.optString("id", "").trim()
+                val title = jsonNote.optString("title", "").trim()
+                val body = jsonNote.optString("body", "").trim()
+                if (id.isBlank() || title.isBlank()) continue
+
+                notes.add(
+                    Note(
+                        id = id,
+                        title = title,
+                        body = body,
+                        createdAt = jsonNote.optLong("createdAt", System.currentTimeMillis()),
+                        updatedAt = jsonNote.optLong("updatedAt", System.currentTimeMillis())
+                    )
+                )
+            }
+            notes.sortByDescending { it.updatedAt }
+        } catch (_: Exception) {
+            notes.clear()
         }
     }
 

@@ -19,6 +19,8 @@ class AddHabitFragment : Fragment() {
 
     private var habitTitleInput: TextInputEditText? = null
     private var habitNoteInput: TextInputEditText? = null
+    private var noteTitleInput: TextInputEditText? = null
+    private var noteBodyInput: TextInputEditText? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,7 +35,10 @@ class AddHabitFragment : Fragment() {
 
         habitTitleInput = view.findViewById(R.id.habitTitleInput)
         habitNoteInput = view.findViewById(R.id.habitNoteInput)
+        noteTitleInput = view.findViewById(R.id.noteTitleInput)
+        noteBodyInput = view.findViewById(R.id.noteBodyInput)
         val addHabitButton: MaterialButton = view.findViewById(R.id.addHabitButton)
+        val addNoteButton: MaterialButton = view.findViewById(R.id.addNoteButton)
         
         val habitFlexibleSwitch: SwitchMaterial = view.findViewById(R.id.habitFlexibleSwitch)
         val flexibleOptionsLayout: LinearLayout = view.findViewById(R.id.flexibleOptionsLayout)
@@ -43,6 +48,7 @@ class AddHabitFragment : Fragment() {
         }
 
         addHabitButton.setOnClickListener { addHabit(view) }
+        addNoteButton.setOnClickListener { addNote(view) }
     }
 
     private fun addHabit(rootView: View) {
@@ -66,6 +72,28 @@ class AddHabitFragment : Fragment() {
         rootView.findViewById<SwitchMaterial>(R.id.habitFlexibleSwitch).isChecked = false
 
         val snackbar = Snackbar.make(rootView, R.string.habit_added, Snackbar.LENGTH_SHORT)
+        activity?.findViewById<View>(R.id.bottomNavigationView)?.let { navView ->
+            snackbar.setAnchorView(navView)
+        }
+        snackbar.show()
+
+        (activity as? DashboardActivity)?.showHabitsTab()
+    }
+
+    private fun addNote(rootView: View) {
+        val title = noteTitleInput?.text?.toString()?.trim().orEmpty()
+        val body = noteBodyInput?.text?.toString()?.trim().orEmpty()
+
+        if (title.isBlank()) {
+            Toast.makeText(requireContext(), R.string.error_note_title_required, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        HabitRepository.addNote(title, body)
+        noteTitleInput?.setText("")
+        noteBodyInput?.setText("")
+
+        val snackbar = Snackbar.make(rootView, R.string.note_added, Snackbar.LENGTH_SHORT)
         activity?.findViewById<View>(R.id.bottomNavigationView)?.let { navView ->
             snackbar.setAnchorView(navView)
         }

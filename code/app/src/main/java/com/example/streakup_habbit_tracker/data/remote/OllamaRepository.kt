@@ -1,6 +1,7 @@
 package com.example.streakup_habbit_tracker.data.remote
 
 import com.example.streakup_habbit_tracker.data.HabitRepository
+import com.example.streakup_habbit_tracker.data.Note
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -47,6 +48,30 @@ object OllamaRepository {
             Did I complete it today? $completedToday
             
             Give me a short, 1-2 sentence personalized tip or word of encouragement to keep my streak going or improve my consistency.
+        """.trimIndent()
+
+        try {
+            val response = apiService.generateInsights(OllamaRequest(prompt = prompt))
+            if (response.isSuccessful && response.body() != null) {
+                response.body()?.response ?: "Received empty response from AI."
+            } else {
+                "Error communicating with AI: ${response.code()} ${response.message()}"
+            }
+        } catch (e: Exception) {
+            "Network error: ${e.message}"
+        }
+    }
+
+    suspend fun getNoteHelp(note: Note): String = withContext(Dispatchers.IO) {
+        val apiService = getApiService()
+            ?: return@withContext "Error: Ngrok URL is not set."
+
+        val prompt = """
+            I wrote this note:
+            Title: "${note.title}"
+            Body: "${note.body}"
+
+            Help me improve or act on it. Keep the answer short: give 2-3 useful suggestions, a clearer version, or next steps depending on what the note needs.
         """.trimIndent()
 
         try {

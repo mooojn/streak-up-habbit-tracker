@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.streakup_habbit_tracker.R
 import com.example.streakup_habbit_tracker.data.Habit
 import com.example.streakup_habbit_tracker.data.HabitRepository
+import com.example.streakup_habbit_tracker.data.Note
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -29,9 +30,12 @@ import java.util.Locale
 class HabitsFragment : Fragment() {
 
     private var habitAdapter: HabitAdapter? = null
+    private var noteAdapter: NoteAdapter? = null
     private var emptyStateText: View? = null
+    private var emptyNotesText: View? = null
     private var bulkCompleteButton: MaterialButton? = null
     private var habitsSummaryText: TextView? = null
+    private var notesSummaryText: TextView? = null
     private var currentHabitCount: Int = 0
 
     override fun onCreateView(
@@ -46,9 +50,12 @@ class HabitsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val habitsRecyclerView: RecyclerView = view.findViewById(R.id.habitsRecyclerView)
+        val notesRecyclerView: RecyclerView = view.findViewById(R.id.notesRecyclerView)
         emptyStateText = view.findViewById(R.id.emptyStateText)
+        emptyNotesText = view.findViewById(R.id.emptyNotesText)
         bulkCompleteButton = view.findViewById(R.id.bulkCompleteButton)
         habitsSummaryText = view.findViewById(R.id.habitsSummaryText)
+        notesSummaryText = view.findViewById(R.id.notesSummaryText)
 
         habitAdapter = HabitAdapter(object : HabitAdapter.HabitActionListener {
             override fun onEdit(habit: Habit) {
@@ -74,14 +81,29 @@ class HabitsFragment : Fragment() {
             override fun onInsight(habit: Habit) {
                 showInsightDialog(habit)
             }
-
-            override fun onDailyNote(habit: Habit) {
-                showDailyNoteDialog(habit)
-            }
         })
 
         habitsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         habitsRecyclerView.adapter = habitAdapter
+        habitsRecyclerView.isNestedScrollingEnabled = false
+
+        noteAdapter = NoteAdapter(object : NoteAdapter.NoteActionListener {
+            override fun onAiHelp(note: Note) {
+                showNoteAiHelpDialog(note)
+            }
+
+            override fun onEdit(note: Note) {
+                showEditNoteDialog(note)
+            }
+
+            override fun onDelete(note: Note) {
+                showDeleteNoteConfirmation(note)
+            }
+        })
+        notesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        notesRecyclerView.adapter = noteAdapter
+        notesRecyclerView.isNestedScrollingEnabled = false
+
         bulkCompleteButton?.setOnClickListener {
             completeSelectedHabits()
         }
@@ -90,6 +112,7 @@ class HabitsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         refreshHabits()
+        refreshNotes()
     }
 
     private fun refreshHabits() {
@@ -98,6 +121,17 @@ class HabitsFragment : Fragment() {
         habitAdapter?.setHabits(habits)
         emptyStateText?.isVisible = habits.isEmpty()
         updateHeaderSummary(habitAdapter?.getSelectedHabitIds()?.size ?: 0)
+    }
+
+    private fun refreshNotes() {
+        val notes = HabitRepository.getNotes()
+        noteAdapter?.setNotes(notes)
+        emptyNotesText?.isVisible = notes.isEmpty()
+        notesSummaryText?.text = resources.getQuantityString(
+            R.plurals.note_count_summary,
+            notes.size,
+            notes.size
+        )
     }
 
     private fun updateBulkCompleteButton(selectedCount: Int) {
@@ -232,6 +266,57 @@ class HabitsFragment : Fragment() {
             .show()
     }
 
+    private fun showEditNoteDialog(note: Note) {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_note, null)
+        val titleInput: TextInputEditText = dialogView.findViewById(R.id.editNoteTitleInput)
+        val bodyInput: TextInputEditText = dialogView.findViewById(R.id.editNoteBodyInput)
+
+        titleInput.setText(note.title)
+        bodyInput.setText(note.body)
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.edit_note_title)
+            .setView(dialogView)
+            .setNegativeButton(R.string.action_cancel, null)
+            .setPositiveButton(R.string.action_save, null)
+            .create()
+
+        dialog.setOnShowListener {
+            val width = (resources.displayMetrics.widthPixels * 0.9f).toInt()
+            dialog.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val title = titleInput.text?.toString()?.trim().orEmpty()
+                val body = bodyInput.text?.toString()?.trim().orEmpty()
+
+                if (title.isBlank()) {
+                    titleInput.error = getString(R.string.error_note_title_required)
+                    return@setOnClickListener
+                }
+
+                HabitRepository.updateNote(note.id, title, body)
+                refreshNotes()
+                Toast.makeText(requireContext(), R.string.note_updated, Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun showDeleteNoteConfirmation(note: Note) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.delete_note_title)
+            .setMessage(R.string.delete_note_message)
+            .setNegativeButton(R.string.action_cancel, null)
+            .setPositiveButton(R.string.action_delete) { _, _ ->
+                HabitRepository.deleteNote(note.id)
+                refreshNotes()
+                Toast.makeText(requireContext(), R.string.note_deleted, Toast.LENGTH_SHORT).show()
+            }
+            .show()
+    }
+
     private fun showInsightDialog(habit: Habit) {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("AI Insight: ${habit.title}")
@@ -241,6 +326,19 @@ class HabitsFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             val insight = OllamaRepository.getHabitSpecificInsight(habit)
+            dialog.setMessage(insight)
+        }
+    }
+
+    private fun showNoteAiHelpDialog(note: Note) {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.note_ai_help_title, note.title))
+            .setMessage(R.string.ai_generating)
+            .setPositiveButton("OK", null)
+            .show()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val insight = OllamaRepository.getNoteHelp(note)
             dialog.setMessage(insight)
         }
     }
