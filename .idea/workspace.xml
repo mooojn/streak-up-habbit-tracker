@@ -4,21 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="de303377-9829-47da-8d6f-3812fe1e90ab" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gradle/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/config.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/data/HabitRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/data/HabitRepository.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/data/remote/OllamaApiService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/data/remote/OllamaApiService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/data/remote/OllamaModels.kt" beforeDir="false" afterPath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/data/remote/OllamaModels.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/data/remote/OllamaRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/data/remote/OllamaRepository.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/ui/AiInsightsFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/ui/AiInsightsFragment.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/ui/HabitAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/ui/HabitAdapter.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/ui/HabitsFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/ui/HabitsFragment.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/ui/ProfileFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/code/app/src/main/java/com/example/streakup_habbit_tracker/ui/ProfileFragment.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/app/src/main/res/layout/fragment_ai_insights.xml" beforeDir="false" afterPath="$PROJECT_DIR$/code/app/src/main/res/layout/fragment_ai_insights.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/app/src/main/res/layout/fragment_profile.xml" beforeDir="false" afterPath="$PROJECT_DIR$/code/app/src/main/res/layout/fragment_profile.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/app/src/main/res/layout/item_habit.xml" beforeDir="false" afterPath="$PROJECT_DIR$/code/app/src/main/res/layout/item_habit.xml" afterDir="false" />
-    </list>
+    <list default="true" id="de303377-9829-47da-8d6f-3812fe1e90ab" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
