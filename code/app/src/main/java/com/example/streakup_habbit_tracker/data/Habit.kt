@@ -13,5 +13,6 @@ data class Habit(
     var isFlexible: Boolean = false,
     var targetValue: Int = 1,
     var currentValue: Int = 0,
-    var unit: String = ""
+    var unit: String = "",
+    var dailyNotes: MutableMap<String, String> = mutableMapOf()
 )

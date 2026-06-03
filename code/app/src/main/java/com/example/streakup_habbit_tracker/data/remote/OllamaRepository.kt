@@ -17,6 +17,12 @@ object OllamaRepository {
         val safeUrl = if (baseUrl.endsWith("/")) baseUrl else "$baseUrl/"
 
         val client = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader("ngrok-skip-browser-warning", "true")
+                    .build()
+                chain.proceed(request)
+            }
             .readTimeout(60, TimeUnit.SECONDS)
             .connectTimeout(60, TimeUnit.SECONDS)
             .build()
@@ -30,25 +36,17 @@ object OllamaRepository {
         return retrofit.create(OllamaApiService::class.java)
     }
 
-    suspend fun getInsights(): String = withContext(Dispatchers.IO) {
+    suspend fun getHabitSpecificInsight(habit: com.example.streakup_habbit_tracker.data.Habit): String = withContext(Dispatchers.IO) {
         val apiService = getApiService()
-            ?: return@withContext "Error: Ngrok URL is not set. Please set it in the Profile settings."
+            ?: return@withContext "Error: Ngrok URL is not set."
 
-        val habits = HabitRepository.getHabits()
-        if (habits.isEmpty()) {
-            return@withContext "You don't have any habits yet. Add some habits and start building your streak!"
-        }
-
-        val habitsInfo = habits.joinToString(separator = "\n") { habit ->
-            "- ${habit.title}: Streak of ${habit.streakCount} days. Completed today? ${if (HabitRepository.hasCompletedToday(habit)) "Yes" else "No"}"
-        }
-
+        val completedToday = if (HabitRepository.hasCompletedToday(habit)) "Yes" else "No"
         val prompt = """
-            You are a helpful and encouraging habit coach.
-            Here are my current habits and streaks:
-            ${habitsInfo}
+            I have a habit called "${habit.title}".
+            My current streak is ${habit.streakCount} days.
+            Did I complete it today? $completedToday
             
-            Please analyze my habits and give me a short, encouraging insight and self-improvement advice in 2-3 sentences.
+            Give me a short, 1-2 sentence personalized tip or word of encouragement to keep my streak going or improve my consistency.
         """.trimIndent()
 
         try {
@@ -60,6 +58,20 @@ object OllamaRepository {
             }
         } catch (e: Exception) {
             "Network error: ${e.message}"
+        }
+    }
+
+    suspend fun sendChatMessage(messages: List<OllamaMessage>): OllamaMessage? = withContext(Dispatchers.IO) {
+        val apiService = getApiService() ?: return@withContext OllamaMessage("assistant", "Error: Ngrok URL is not set.")
+        try {
+            val response = apiService.chat(OllamaChatRequest(messages = messages))
+            if (response.isSuccessful && response.body() != null) {
+                response.body()?.message
+            } else {
+                OllamaMessage("assistant", "Error communicating with AI: ${response.code()} ${response.message()}")
+            }
+        } catch (e: Exception) {
+            OllamaMessage("assistant", "Network error: ${e.message}")
         }
     }
 }

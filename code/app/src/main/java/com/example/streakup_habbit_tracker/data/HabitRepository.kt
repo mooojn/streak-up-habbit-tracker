@@ -41,7 +41,7 @@ object HabitRepository {
         }
 
     var ngrokUrl: String
-        get() = ngrokUrlBacking
+        get() = ngrokUrlBacking.ifEmpty { "https://flock-argue-unengaged.ngrok-free.dev" }
         set(value) {
             ngrokUrlBacking = value.trim()
             preferences?.edit()?.putString(KEY_NGROK_URL, ngrokUrlBacking)?.apply()
@@ -86,7 +86,22 @@ object HabitRepository {
     }
 
     @Synchronized
-    fun getHabits(): List<Habit> = habits.map { it.copy() }
+    fun getHabits(): List<Habit> = habits.map { it.copy(dailyNotes = it.dailyNotes.toMutableMap()) }
+
+    @Synchronized
+    fun getDailyNote(habitId: String, date: String): String =
+        habits.find { it.id == habitId }?.dailyNotes?.get(date) ?: ""
+
+    @Synchronized
+    fun saveDailyNote(habitId: String, date: String, note: String) {
+        val habit = habits.find { it.id == habitId } ?: return
+        if (note.isBlank()) {
+            habit.dailyNotes.remove(date)
+        } else {
+            habit.dailyNotes[date] = note.trim()
+        }
+        persistHabits()
+    }
 
     @Synchronized
     fun deleteHabit(habitId: String) {
@@ -262,6 +277,9 @@ object HabitRepository {
                 put("targetValue", habit.targetValue)
                 put("currentValue", habit.currentValue)
                 put("unit", habit.unit)
+                val notesJson = JSONObject()
+                habit.dailyNotes.forEach { (date, text) -> notesJson.put(date, text) }
+                put("dailyNotes", notesJson)
             }
             array.put(jsonHabit)
         }
@@ -293,6 +311,17 @@ object HabitRepository {
                 val title = jsonHabit.optString("title", "").trim()
                 if (id.isBlank() || title.isBlank()) continue
 
+                val dailyNotes = mutableMapOf<String, String>()
+                val notesJson = jsonHabit.optJSONObject("dailyNotes")
+                if (notesJson != null) {
+                    val notesKeys = notesJson.keys()
+                    while (notesKeys.hasNext()) {
+                        val k = notesKeys.next()
+                        val v = notesJson.optString(k, "")
+                        if (v.isNotBlank()) dailyNotes[k] = v
+                    }
+                }
+
                 habits.add(
                     Habit(
                         id = id,
@@ -305,7 +334,8 @@ object HabitRepository {
                         isFlexible = jsonHabit.optBoolean("isFlexible", false),
                         targetValue = jsonHabit.optInt("targetValue", 1),
                         currentValue = jsonHabit.optInt("currentValue", 0),
-                        unit = jsonHabit.optString("unit", "")
+                        unit = jsonHabit.optString("unit", ""),
+                        dailyNotes = dailyNotes
                     )
                 )
             }

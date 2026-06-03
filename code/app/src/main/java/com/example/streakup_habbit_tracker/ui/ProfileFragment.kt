@@ -16,6 +16,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
+import androidx.appcompat.app.AppCompatDelegate
 
 class ProfileFragment : Fragment() {
 
@@ -28,6 +29,7 @@ class ProfileFragment : Fragment() {
     private var reminderTimeLabel: TextView? = null
     private var changeReminderTimeButton: MaterialButton? = null
     private var friendsButton: MaterialButton? = null
+    private var darkModeToggle: SwitchMaterial? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,6 +51,7 @@ class ProfileFragment : Fragment() {
         reminderTimeLabel = view.findViewById(R.id.reminderTimeLabel)
         changeReminderTimeButton = view.findViewById(R.id.changeReminderTimeButton)
         friendsButton = view.findViewById(R.id.friendsButton)
+        darkModeToggle = view.findViewById(R.id.darkModeToggle)
 
         editNameButton?.setOnClickListener { showEditNameDialog() }
 
@@ -86,6 +89,14 @@ class ProfileFragment : Fragment() {
                 StreakReminderScheduler.cancel(requireContext())
                 Toast.makeText(requireContext(), "Reminders disabled", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        // Dark mode toggle
+        darkModeToggle?.isChecked = HabitRepository.darkMode == AppCompatDelegate.MODE_NIGHT_YES
+        darkModeToggle?.setOnCheckedChangeListener { _, isChecked ->
+            val mode = if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            HabitRepository.darkMode = mode
+            AppCompatDelegate.setDefaultNightMode(mode)
         }
 
         // Reminder time picker

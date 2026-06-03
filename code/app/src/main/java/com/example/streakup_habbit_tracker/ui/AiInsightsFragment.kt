@@ -4,22 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.EditText
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.streakup_habbit_tracker.R
+import com.example.streakup_habbit_tracker.data.HabitRepository
+import com.example.streakup_habbit_tracker.data.remote.OllamaMessage
 import com.example.streakup_habbit_tracker.data.remote.OllamaRepository
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
 
 class AiInsightsFragment : Fragment() {
 
-    private var generateInsightsButton: MaterialButton? = null
-    private var loadingSpinner: ProgressBar? = null
-    private var insightsCard: MaterialCardView? = null
-    private var insightsResultText: TextView? = null
+    private lateinit var chatRecyclerView: RecyclerView
+    private lateinit var chatInputEditText: EditText
+    private lateinit var chatSendButton: ImageButton
+    private lateinit var chatAdapter: ChatAdapter
+
+    private val messages = mutableListOf<OllamaMessage>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,29 +35,71 @@ class AiInsightsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        generateInsightsButton = view.findViewById(R.id.generateInsightsButton)
-        loadingSpinner = view.findViewById(R.id.loadingSpinner)
-        insightsCard = view.findViewById(R.id.insightsCard)
-        insightsResultText = view.findViewById(R.id.insightsResultText)
+        chatRecyclerView = view.findViewById(R.id.chatRecyclerView)
+        chatInputEditText = view.findViewById(R.id.chatInputEditText)
+        chatSendButton = view.findViewById(R.id.chatSendButton)
 
-        generateInsightsButton?.setOnClickListener {
-            generateInsights()
+        chatAdapter = ChatAdapter()
+        val layoutManager = LinearLayoutManager(requireContext())
+        layoutManager.stackFromEnd = true
+        chatRecyclerView.layoutManager = layoutManager
+        chatRecyclerView.adapter = chatAdapter
+
+        setupInitialContext()
+
+        chatSendButton.setOnClickListener {
+            val userText = chatInputEditText.text.toString().trim()
+            if (userText.isNotEmpty()) {
+                sendMessage(userText)
+            }
         }
     }
 
-    private fun generateInsights() {
-        loadingSpinner?.visibility = View.VISIBLE
-        insightsCard?.visibility = View.GONE
-        generateInsightsButton?.isEnabled = false
+    private fun setupInitialContext() {
+        val habits = HabitRepository.getHabits()
+        val habitsInfo = if (habits.isEmpty()) {
+            "The user doesn't have any habits yet."
+        } else {
+            habits.joinToString(separator = "\n") { habit ->
+                "- ${habit.title}: Streak of ${habit.streakCount} days. Completed today? ${if (HabitRepository.hasCompletedToday(habit)) "Yes" else "No"}"
+            }
+        }
+
+        val systemPrompt = """
+            You are a helpful, encouraging habit coach chatbot.
+            You help the user improve their habits.
+            Here is the user's current habit data:
+            $habitsInfo
+            
+            Always keep your answers concise, encouraging, and directly related to the user's habits if asked.
+        """.trimIndent()
+
+        messages.add(OllamaMessage(role = "system", content = systemPrompt))
+        messages.add(OllamaMessage(role = "assistant", content = "Hi! I'm your AI Habit Coach. Ask me anything about your habits or how to improve your streak!"))
+        chatAdapter.setMessages(messages)
+    }
+
+    private fun sendMessage(text: String) {
+        chatInputEditText.text.clear()
+        
+        messages.add(OllamaMessage(role = "user", content = text))
+        chatAdapter.setMessages(messages)
+        chatRecyclerView.scrollToPosition(chatAdapter.itemCount - 1)
+
+        chatSendButton.isEnabled = false
 
         viewLifecycleOwner.lifecycleScope.launch {
-            val result = OllamaRepository.getInsights()
+            val responseMsg = OllamaRepository.sendChatMessage(messages)
             
-            loadingSpinner?.visibility = View.GONE
-            insightsCard?.visibility = View.VISIBLE
-            generateInsightsButton?.isEnabled = true
+            if (responseMsg != null) {
+                messages.add(responseMsg)
+            } else {
+                messages.add(OllamaMessage(role = "assistant", content = "Sorry, I couldn't get a response. Please try again."))
+            }
             
-            insightsResultText?.text = result
+            chatAdapter.setMessages(messages)
+            chatRecyclerView.scrollToPosition(chatAdapter.itemCount - 1)
+            chatSendButton.isEnabled = true
         }
     }
 }

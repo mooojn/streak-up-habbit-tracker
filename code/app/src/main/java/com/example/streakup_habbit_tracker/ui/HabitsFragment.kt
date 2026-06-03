@@ -19,6 +19,12 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.switchmaterial.SwitchMaterial
 import android.widget.LinearLayout
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import com.example.streakup_habbit_tracker.data.remote.OllamaRepository
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class HabitsFragment : Fragment() {
 
@@ -63,6 +69,14 @@ class HabitsFragment : Fragment() {
 
             override fun onProgressChanged(habit: Habit) {
                 refreshHabits()
+            }
+
+            override fun onInsight(habit: Habit) {
+                showInsightDialog(habit)
+            }
+
+            override fun onDailyNote(habit: Habit) {
+                showDailyNoteDialog(habit)
             }
         })
 
@@ -216,5 +230,104 @@ class HabitsFragment : Fragment() {
                 Toast.makeText(requireContext(), R.string.habit_deleted, Toast.LENGTH_SHORT).show()
             }
             .show()
+    }
+
+    private fun showInsightDialog(habit: Habit) {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle("AI Insight: ${habit.title}")
+            .setMessage("Generating insight...")
+            .setPositiveButton("OK", null)
+            .show()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val insight = OllamaRepository.getHabitSpecificInsight(habit)
+            dialog.setMessage(insight)
+        }
+    }
+
+    private fun showDailyNoteDialog(habit: Habit) {
+        val todayFmt = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val displayFmt = SimpleDateFormat("EEE, MMM dd yyyy", Locale.US)
+        val today = todayFmt.format(Date())
+        val displayDate = displayFmt.format(Date())
+
+        val existingNote = HabitRepository.getDailyNote(habit.id, today)
+
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_daily_note, null)
+        val noteInput: TextInputEditText = dialogView.findViewById(R.id.dailyNoteInput)
+        val dateLabel: TextView = dialogView.findViewById(R.id.dailyNoteDateLabel)
+        val historyHeader: TextView = dialogView.findViewById(R.id.dailyNoteHistoryHeader)
+        val historyList: RecyclerView = dialogView.findViewById(R.id.dailyNoteHistoryList)
+
+        dateLabel.text = "📅 $displayDate"
+        noteInput.setText(existingNote)
+
+        // Show past notes (excluding today) in reverse chronological order
+        val pastNotes = habit.dailyNotes
+            .filter { it.key != today }
+            .entries
+            .sortedByDescending { it.key }
+
+        if (pastNotes.isNotEmpty()) {
+            historyHeader.isVisible = true
+            historyList.isVisible = true
+            historyList.layoutManager = LinearLayoutManager(requireContext())
+            historyList.adapter = DailyNoteHistoryAdapter(pastNotes)
+        }
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle("📝 ${habit.title}")
+            .setView(dialogView)
+            .setNegativeButton(R.string.action_cancel, null)
+            .setPositiveButton(R.string.action_save) { _, _ ->
+                val note = noteInput.text?.toString()?.trim().orEmpty()
+                HabitRepository.saveDailyNote(habit.id, today, note)
+                val msg = if (note.isBlank()) "Note cleared" else "Daily note saved!"
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                refreshHabits()
+            }
+            .create()
+
+        dialog.setOnShowListener {
+            val width = (resources.displayMetrics.widthPixels * 0.92f).toInt()
+            dialog.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
+            // Move cursor to end of existing text
+            noteInput.setSelection(noteInput.text?.length ?: 0)
+        }
+
+        dialog.show()
+    }
+
+    /**
+     * Simple inline adapter for the past notes history list inside the daily note dialog.
+     */
+    private inner class DailyNoteHistoryAdapter(
+        private val items: List<Map.Entry<String, String>>
+    ) : RecyclerView.Adapter<DailyNoteHistoryAdapter.NoteVH>() {
+
+        inner class NoteVH(view: View) : RecyclerView.ViewHolder(view) {
+            val dateText: TextView = view.findViewById(android.R.id.text1)
+            val noteText: TextView = view.findViewById(android.R.id.text2)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteVH {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(android.R.layout.simple_list_item_2, parent, false)
+            return NoteVH(view)
+        }
+
+        override fun onBindViewHolder(holder: NoteVH, position: Int) {
+            val entry = items[position]
+            val displayFmt = SimpleDateFormat("EEE, MMM dd yyyy", Locale.US)
+            val parseFmt = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+            val parsedDate = runCatching { parseFmt.parse(entry.key) }.getOrNull()
+            holder.dateText.text = if (parsedDate != null) displayFmt.format(parsedDate) else entry.key
+            holder.noteText.text = entry.value
+            holder.dateText.setTextColor(
+                androidx.core.content.ContextCompat.getColor(holder.dateText.context, R.color.brand_primary)
+            )
+        }
+
+        override fun getItemCount() = items.size
     }
 }

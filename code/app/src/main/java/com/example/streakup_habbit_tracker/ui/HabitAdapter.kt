@@ -25,6 +25,8 @@ class HabitAdapter(private val actionListener: HabitActionListener) :
         fun onCompleteToday(habit: Habit)
         fun onSelectionChanged(selectedCount: Int)
         fun onProgressChanged(habit: Habit)
+        fun onInsight(habit: Habit)
+        fun onDailyNote(habit: Habit)
     }
 
     private val habits = mutableListOf<Habit>()
@@ -149,8 +151,21 @@ class HabitAdapter(private val actionListener: HabitActionListener) :
             updateSelection(habit.id, isChecked)
         }
 
+        holder.insightHabitButton.setOnClickListener { actionListener.onInsight(habit) }
         holder.editHabitButton.setOnClickListener { actionListener.onEdit(habit) }
         holder.deleteHabitButton.setOnClickListener { actionListener.onDelete(habit) }
+        holder.dailyNoteHabitButton.setOnClickListener { actionListener.onDailyNote(habit) }
+
+        // Tint the note button amber if a note exists for today
+        val todayKey = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date())
+        val hasNoteToday = habit.dailyNotes.containsKey(todayKey)
+        val noteTint = if (hasNoteToday) {
+            ContextCompat.getColor(context, R.color.brand_secondary)
+        } else {
+            ContextCompat.getColor(context, R.color.brand_primary)
+        }
+        holder.dailyNoteHabitButton.setColorFilter(noteTint)
+
         holder.itemView.setOnClickListener {
             holder.selectHabitCheckbox.isChecked = !holder.selectHabitCheckbox.isChecked
         }
@@ -174,6 +189,8 @@ class HabitAdapter(private val actionListener: HabitActionListener) :
         val habitNoteText: TextView = itemView.findViewById(R.id.habitNoteText)
         val habitStatusText: TextView = itemView.findViewById(R.id.habitStatusText)
         val habitStreakText: TextView = itemView.findViewById(R.id.habitStreakText)
+        val insightHabitButton: ImageButton = itemView.findViewById(R.id.insightHabitButton)
+        val dailyNoteHabitButton: ImageButton = itemView.findViewById(R.id.dailyNoteHabitButton)
         val editHabitButton: ImageButton = itemView.findViewById(R.id.editHabitButton)
         val deleteHabitButton: ImageButton = itemView.findViewById(R.id.deleteHabitButton)
         val completeHabitButton: MaterialButton = itemView.findViewById(R.id.completeHabitButton)
