@@ -28,3 +28,12 @@ data class OllamaChatResponse(
     @SerializedName("model") val model: String?,
     @SerializedName("message") val message: OllamaMessage?
 )
+
+data class VoiceCreateDraft(
+    val type: String,
+    val title: String,
+    val details: String,
+    val isFlexible: Boolean = false,
+    val targetValue: Int = 1,
+    val unit: String = ""
+)

@@ -5,6 +5,7 @@ import com.example.streakup_habbit_tracker.data.Note
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
+import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -98,5 +99,68 @@ object OllamaRepository {
         } catch (e: Exception) {
             OllamaMessage("assistant", "Network error: ${e.message}")
         }
+    }
+
+    suspend fun createDraftFromVoice(transcript: String): VoiceCreateDraft = withContext(Dispatchers.IO) {
+        val apiService = getApiService()
+            ?: throw IllegalStateException("Ngrok URL is not set.")
+
+        val prompt = """
+            Convert this spoken request into one StreakUp create action.
+
+            Spoken request:
+            "$transcript"
+
+            Return only valid JSON with exactly these keys:
+            {
+              "type": "habit" or "note",
+              "title": "short title",
+              "details": "short note/body text, empty string if none",
+              "isFlexible": true or false,
+              "targetValue": integer daily target, default 1,
+              "unit": "unit for flexible habits, empty string if none"
+            }
+
+            Use type "habit" when the user wants to track a recurring action.
+            Use type "note" when the user wants to save an idea, reminder, journal entry, or one-time note.
+            For flexible habits like water, pages, steps, prayers, minutes, or workouts with a number, set isFlexible true and fill targetValue and unit.
+        """.trimIndent()
+
+        val response = apiService.generateInsights(OllamaRequest(prompt = prompt))
+        if (!response.isSuccessful || response.body() == null) {
+            throw IllegalStateException("Error communicating with AI: ${response.code()} ${response.message()}")
+        }
+
+        val rawResponse = response.body()?.response.orEmpty()
+        val json = JSONObject(extractJsonObject(rawResponse))
+        val type = json.optString("type", "habit").lowercase().let {
+            if (it == "note") "note" else "habit"
+        }
+        val title = json.optString("title", "").trim()
+        if (title.isBlank()) {
+            throw IllegalStateException("AI could not find a title in the voice request.")
+        }
+
+        VoiceCreateDraft(
+            type = type,
+            title = title,
+            details = json.optString("details", "").trim(),
+            isFlexible = type == "habit" && json.optBoolean("isFlexible", false),
+            targetValue = json.optInt("targetValue", 1).coerceAtLeast(1),
+            unit = json.optString("unit", "").trim()
+        )
+    }
+
+    private fun extractJsonObject(text: String): String {
+        val cleaned = text
+            .replace("```json", "", ignoreCase = true)
+            .replace("```", "")
+            .trim()
+        val start = cleaned.indexOf('{')
+        val end = cleaned.lastIndexOf('}')
+        if (start == -1 || end == -1 || end <= start) {
+            throw IllegalStateException("AI did not return a valid create draft.")
+        }
+        return cleaned.substring(start, end + 1)
     }
 }
