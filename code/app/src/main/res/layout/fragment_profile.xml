@@ -11,6 +11,7 @@
         android:orientation="vertical"
         android:padding="18dp">
 
+        <!-- Page Title -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,6 +20,7 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
+        <!-- Identity Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,19 +38,21 @@
                 android:orientation="horizontal"
                 android:padding="18dp">
 
+                <!-- Avatar -->
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
-                    app:cardBackgroundColor="@color/surface_app"
-                    app:cardCornerRadius="26dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    app:cardBackgroundColor="@color/surface_selected"
+                    app:cardCornerRadius="28dp"
                     app:cardElevation="0dp">
 
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"
-                        android:src="@android:drawable/ic_menu_myplaces"
-                        android:tint="@color/brand_primary" />
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/ic_profile"
+                        android:tint="@color/brand_primary"
+                        android:contentDescription="Profile avatar" />
                 </com.google.android.material.card.MaterialCardView>
 
                 <LinearLayout
@@ -70,10 +74,10 @@
                         android:id="@+id/profileSubtitleText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="3dp"
                         android:text="@string/profile_subtitle"
                         android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
+                        android:textSize="13sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -88,9 +92,9 @@
                             android:minWidth="0dp"
                             android:minHeight="0dp"
                             android:paddingStart="12dp"
-                            android:paddingTop="8dp"
+                            android:paddingTop="7dp"
                             android:paddingEnd="12dp"
-                            android:paddingBottom="8dp"
+                            android:paddingBottom="7dp"
                             android:text="@string/action_edit_name"
                             android:textAllCaps="false"
                             android:textColor="@color/brand_primary"
@@ -98,33 +102,44 @@
                             app:backgroundTint="@color/surface_app"
                             app:cornerRadius="10dp"
                             app:strokeColor="@color/stroke_soft"
-                            app:strokeWidth="1dp" />
+                            app:strokeWidth="1dp"
+                            app:icon="@drawable/ic_edit"
+                            app:iconGravity="textStart"
+                            app:iconPadding="6dp"
+                            app:iconSize="14dp"
+                            app:iconTint="@color/brand_primary" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/friendsButton"
+                            android:id="@+id/signOutButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:minWidth="0dp"
                             android:minHeight="0dp"
                             android:paddingStart="12dp"
-                            android:paddingTop="8dp"
+                            android:paddingTop="7dp"
                             android:paddingEnd="12dp"
-                            android:paddingBottom="8dp"
-                            android:text="@string/title_friends"
+                            android:paddingBottom="7dp"
+                            android:text="Sign Out"
                             android:textAllCaps="false"
-                            android:textColor="@color/brand_primary"
+                            android:textColor="@color/danger"
                             android:textSize="13sp"
                             app:backgroundTint="@color/surface_app"
                             app:cornerRadius="10dp"
                             app:strokeColor="@color/stroke_soft"
-                            app:strokeWidth="1dp" />
+                            app:strokeWidth="1dp"
+                            app:icon="@drawable/ic_clear"
+                            app:iconGravity="textStart"
+                            app:iconPadding="6dp"
+                            app:iconSize="14dp"
+                            app:iconTint="@color/danger" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Stats Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -141,27 +156,41 @@
                 android:orientation="vertical"
                 android:padding="18dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/profile_stats_title"
-                    android:textColor="@color/text_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        app:srcCompat="@drawable/ic_habits"
+                        android:tint="@color/brand_primary"
+                        android:contentDescription="Stats" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/profile_stats_title"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/profileHabitCountText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="8dp"
                     android:textColor="@color/text_secondary"
-                    android:textSize="15sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-
-
+        <!-- Notifications Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -184,9 +213,17 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        app:srcCompat="@drawable/ic_notification"
+                        android:tint="@color/brand_primary"
+                        android:contentDescription="Notifications" />
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:text="Notifications &amp; Reminders"
                         android:textColor="@color/text_primary"
@@ -203,7 +240,7 @@
                     android:id="@+id/reminderTimeLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="10dp"
                     android:text="Daily reminder time: 20:00"
                     android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
@@ -215,10 +252,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="Change Time"
+                    android:textAllCaps="false"
                     app:cornerRadius="10dp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- AI & Sync Settings Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -235,25 +274,41 @@
                 android:orientation="vertical"
                 android:padding="18dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="AI &amp; Sync Settings"
-                    android:textColor="@color/text_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        app:srcCompat="@drawable/ic_settings_ai"
+                        android:tint="@color/brand_primary"
+                        android:contentDescription="AI Settings" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="AI &amp; Sync Settings"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="12dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/ngrokUrlEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Ngrok Server URL (e.g. https://abc.ngrok.app)"
-                        android:inputType="textUri" />
+                        android:inputType="textUri"
+                        android:textColorHint="@color/text_hint" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
@@ -262,10 +317,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="Save URL"
+                    android:textAllCaps="false"
                     app:cornerRadius="10dp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Appearance Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -282,18 +339,33 @@
                 android:orientation="vertical"
                 android:padding="18dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Appearance"
-                    android:textColor="@color/text_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        app:srcCompat="@drawable/ic_appearance"
+                        android:tint="@color/brand_primary"
+                        android:contentDescription="Appearance" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Appearance"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="12dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 

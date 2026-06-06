@@ -9,29 +9,31 @@
     android:padding="28dp">
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         app:cardBackgroundColor="@color/surface_card"
-        app:cardCornerRadius="28dp"
-        app:cardElevation="0dp"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="8dp"
         app:strokeColor="@color/stroke_soft"
         app:strokeWidth="1dp">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="22dp"
-            android:src="@mipmap/ic_launcher"
-            android:tint="@color/brand_primary" />
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_habits"
+            android:tint="@color/brand_primary"
+            android:contentDescription="App logo" />
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:text="@string/splash_title"
         android:textColor="@color/text_primary"
         android:textSize="34sp"
+        android:letterSpacing="-0.01"
         android:textStyle="bold" />
 
     <TextView
@@ -44,11 +46,12 @@
         android:textSize="15sp" />
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:layout_width="190dp"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="32dp"
         android:indeterminate="true"
         app:indicatorColor="@color/brand_primary"
-        app:trackColor="@color/stroke_soft" />
+        app:trackColor="@color/stroke_soft"
+        app:trackCornerRadius="4dp" />
 
 </LinearLayout>

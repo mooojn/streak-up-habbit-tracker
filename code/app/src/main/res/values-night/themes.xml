@@ -1,15 +1,18 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Night-mode overrides for status/nav bars and bottom nav -->
     <style name="Theme.StreakUpHabbitTracker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/brand_primary</item>
         <item name="colorPrimaryVariant">@color/brand_primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/brand_secondary</item>
         <item name="colorSecondaryVariant">@color/brand_secondary</item>
-        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnSecondary">@color/surface_app</item>
         <item name="android:statusBarColor">@color/surface_app</item>
-        <item name="android:windowLightStatusBar" tools:ignore="NewApi">false</item>
+        <item name="android:windowLightStatusBar">false</item>
         <item name="android:navigationBarColor">@color/surface_card</item>
-        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
         <item name="android:windowBackground">@color/surface_app</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
 </resources>

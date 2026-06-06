@@ -4,274 +4,282 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/tracker_intro"
-        android:textColor="@color/text_secondary"
-        android:textSize="14sp" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        app:cardBackgroundColor="@color/surface_card"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="0dp"
-        app:strokeColor="@color/stroke_soft"
-        app:strokeWidth="1dp">
-
+        <!-- Section header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="4dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/previousMonthButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:minWidth="0dp"
-                    android:text="@string/tracker_previous"
-                    android:textAllCaps="false"
-                    app:backgroundTint="@color/surface_app"
-                    app:cornerRadius="12dp"
-                    app:iconPadding="0dp" />
-
-                <TextView
-                    android:id="@+id/trackerMonthTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textColor="@color/text_primary"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/nextMonthButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:minWidth="0dp"
-                    android:text="@string/tracker_next"
-                    android:textAllCaps="false"
-                    app:backgroundTint="@color/surface_app"
-                    app:cornerRadius="12dp"
-                    app:iconPadding="0dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/tracker_day_sun"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/tracker_day_mon"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/tracker_day_tue"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/tracker_day_wed"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/tracker_day_thu"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/tracker_day_fri"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/tracker_day_sat"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="11sp" />
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/trackerRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:nestedScrollingEnabled="false" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/tracker_legend_less"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
-
-                <View
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginStart="8dp"
-                    android:background="@color/tracker_level_0" />
-
-                <View
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginStart="6dp"
-                    android:background="@color/tracker_level_1" />
-
-                <View
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginStart="6dp"
-                    android:background="@color/tracker_level_2" />
-
-                <View
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginStart="6dp"
-                    android:background="@color/tracker_level_3" />
-
-                <View
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginStart="6dp"
-                    android:background="@color/tracker_level_4" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/tracker_legend_more"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
-            </LinearLayout>
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- Analytics Chart Section -->
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        app:cardBackgroundColor="@color/surface_card"
-        app:cardCornerRadius="22dp"
-        app:cardElevation="0dp"
-        app:strokeColor="@color/stroke_soft"
-        app:strokeWidth="1dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="18dp">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:srcCompat="@drawable/ic_tracker"
+                android:tint="@color/brand_primary"
+                android:contentDescription="Tracker" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Completion Trends"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/completionBarChart"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="12dp" />
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="@string/tracker_intro"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
 
-    <!-- Badges Section -->
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        app:cardBackgroundColor="@color/surface_card"
-        app:cardCornerRadius="22dp"
-        app:cardElevation="0dp"
-        app:strokeColor="@color/stroke_soft"
-        app:strokeWidth="1dp">
-
-        <LinearLayout
+        <!-- Calendar Heatmap Card -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="18dp">
+            android:layout_marginTop="10dp"
+            app:cardBackgroundColor="@color/surface_card"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/stroke_soft"
+            app:strokeWidth="1dp">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Achievements"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/badgesRecyclerView"
+                <!-- Month nav -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/previousMonthButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:minWidth="0dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp"
+                        app:backgroundTint="@color/surface_app"
+                        app:cornerRadius="12dp"
+                        app:icon="@drawable/ic_chevron_left"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp" />
+
+                    <TextView
+                        android:id="@+id/trackerMonthTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textColor="@color/text_primary"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/nextMonthButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:minWidth="0dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp"
+                        app:backgroundTint="@color/surface_app"
+                        app:cornerRadius="12dp"
+                        app:icon="@drawable/ic_chevron_right"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp" />
+                </LinearLayout>
+
+                <!-- Day header labels -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:orientation="horizontal">
+
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:gravity="center"
+                        android:text="@string/tracker_day_sun" android:textColor="@color/text_secondary"
+                        android:textSize="11sp" android:textStyle="bold" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:gravity="center"
+                        android:text="@string/tracker_day_mon" android:textColor="@color/text_secondary"
+                        android:textSize="11sp" android:textStyle="bold" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:gravity="center"
+                        android:text="@string/tracker_day_tue" android:textColor="@color/text_secondary"
+                        android:textSize="11sp" android:textStyle="bold" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:gravity="center"
+                        android:text="@string/tracker_day_wed" android:textColor="@color/text_secondary"
+                        android:textSize="11sp" android:textStyle="bold" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:gravity="center"
+                        android:text="@string/tracker_day_thu" android:textColor="@color/text_secondary"
+                        android:textSize="11sp" android:textStyle="bold" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:gravity="center"
+                        android:text="@string/tracker_day_fri" android:textColor="@color/text_secondary"
+                        android:textSize="11sp" android:textStyle="bold" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:gravity="center"
+                        android:text="@string/tracker_day_sat" android:textColor="@color/text_secondary"
+                        android:textSize="11sp" android:textStyle="bold" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/trackerRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:nestedScrollingEnabled="false" />
+
+                <!-- Legend -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tracker_legend_less"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp" />
+
+                    <View android:layout_width="12dp" android:layout_height="12dp"
+                        android:layout_marginStart="8dp" android:background="@color/tracker_level_0" />
+                    <View android:layout_width="12dp" android:layout_height="12dp"
+                        android:layout_marginStart="5dp" android:background="@color/tracker_level_1" />
+                    <View android:layout_width="12dp" android:layout_height="12dp"
+                        android:layout_marginStart="5dp" android:background="@color/tracker_level_2" />
+                    <View android:layout_width="12dp" android:layout_height="12dp"
+                        android:layout_marginStart="5dp" android:background="@color/tracker_level_3" />
+                    <View android:layout_width="12dp" android:layout_height="12dp"
+                        android:layout_marginStart="5dp" android:background="@color/tracker_level_4" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/tracker_legend_more"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Completion Trends Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="@color/surface_card"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/stroke_soft"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        app:srcCompat="@drawable/ic_flame"
+                        android:tint="@color/brand_accent"
+                        android:contentDescription="Trends" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Completion Trends"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/completionBarChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="12dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Achievements Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="@color/surface_card"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/stroke_soft"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        app:srcCompat="@drawable/ic_star"
+                        android:tint="@color/brand_accent"
+                        android:contentDescription="Achievements" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Achievements"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/badgesRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </ScrollView>

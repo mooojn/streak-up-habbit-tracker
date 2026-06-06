@@ -27,22 +27,53 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <TextView
+                <!-- Card header with icon -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/voice_create_title"
-                    android:textColor="@color/text_primary"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/voiceStatusText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="@string/voice_create_intro"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp" />
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        app:cardBackgroundColor="@color/surface_selected"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp">
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            app:srcCompat="@drawable/ic_mic"
+                            android:tint="@color/brand_primary"
+                            android:contentDescription="Voice" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/voice_create_title"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/voiceStatusText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/voice_create_intro"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+                </LinearLayout>
 
                 <ProgressBar
                     android:id="@+id/voiceProgressBar"
@@ -53,6 +84,7 @@
                     android:indeterminate="true"
                     android:visibility="gone" />
 
+                <!-- Voice draft preview card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/voiceDraftCard"
                     android:layout_width="match_parent"
@@ -76,7 +108,9 @@
                             android:layout_height="wrap_content"
                             android:text="@string/voice_create_preview"
                             android:textColor="@color/text_secondary"
-                            android:textSize="12sp"
+                            android:textSize="11sp"
+                            android:textAllCaps="true"
+                            android:letterSpacing="0.06"
                             android:textStyle="bold" />
 
                         <TextView
@@ -94,7 +128,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:textColor="@color/text_primary"
-                            android:textSize="18sp"
+                            android:textSize="17sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -103,7 +137,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:textColor="@color/text_secondary"
-                            android:textSize="14sp" />
+                            android:textSize="13sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -124,7 +158,11 @@
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         app:backgroundTint="@color/brand_primary"
-                        app:cornerRadius="14dp" />
+                        app:cornerRadius="14dp"
+                        app:icon="@drawable/ic_mic"
+                        app:iconGravity="textStart"
+                        app:iconPadding="8dp"
+                        app:iconTint="@color/white" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/voiceConfirmButton"
@@ -137,7 +175,11 @@
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         app:backgroundTint="@color/brand_secondary"
-                        app:cornerRadius="14dp" />
+                        app:cornerRadius="14dp"
+                        app:icon="@drawable/ic_check"
+                        app:iconGravity="textStart"
+                        app:iconPadding="8dp"
+                        app:iconTint="@color/white" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -160,13 +202,38 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <TextView
+                <!-- Card header with icon -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/create_habit_title"
-                    android:textColor="@color/text_primary"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        app:cardBackgroundColor="@color/surface_selected"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp">
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            app:srcCompat="@drawable/ic_habits"
+                            android:tint="@color/brand_primary"
+                            android:contentDescription="Habit" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="@string/create_habit_title"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <!-- Habit Name -->
                 <com.google.android.material.textfield.TextInputLayout
@@ -189,7 +256,7 @@
                         android:inputType="textCapSentences"
                         android:maxLines="1"
                         android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_secondary" />
+                        android:textColorHint="@color/text_hint" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Habit Note -->
@@ -214,10 +281,10 @@
                         android:inputType="textMultiLine"
                         android:minLines="3"
                         android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_secondary" />
+                        android:textColorHint="@color/text_hint" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- AI Habit Breakdown Button -->
+                <!-- AI Help Button -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/breakdownButton"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -225,13 +292,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
                     android:paddingVertical="10dp"
-                    android:text="✨ Help me define this"
+                    android:text="Help me define this habit"
                     android:textAllCaps="false"
                     android:textColor="@color/brand_primary"
                     app:strokeColor="@color/brand_primary"
-                    app:cornerRadius="14dp" />
+                    app:cornerRadius="14dp"
+                    app:icon="@drawable/ic_sparkle"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    app:iconTint="@color/brand_primary" />
 
-                <!-- Breakdown Loading Indicator -->
                 <ProgressBar
                     android:id="@+id/breakdownProgressBar"
                     style="?android:attr/progressBarStyleSmall"
@@ -242,7 +312,7 @@
                     android:indeterminate="true"
                     android:visibility="gone" />
 
-                <!-- Breakdown Results Card -->
+                <!-- AI Breakdown Results Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/breakdownResultCard"
                     android:layout_width="match_parent"
@@ -261,19 +331,34 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="✨ AI Habit Breakdown"
-                            android:textColor="@color/brand_primary"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                app:srcCompat="@drawable/ic_sparkle"
+                                android:tint="@color/brand_primary"
+                                android:contentDescription="AI suggestions" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="AI Habit Breakdown"
+                                android:textColor="@color/brand_primary"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Tap any habit below to fill in the form:"
+                            android:text="Tap any suggestion below to fill in the form:"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
 
@@ -283,7 +368,6 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginTop="10dp" />
-
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -293,7 +377,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Flexible Habit (e.g., track pages, water)" />
+                    android:text="Flexible Habit (track progress, e.g. pages, glasses)" />
 
                 <LinearLayout
                     android:id="@+id/flexibleOptionsLayout"
@@ -313,7 +397,7 @@
                             android:id="@+id/habitTargetInput"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Target (e.g., 10)"
+                            android:hint="Target (e.g. 10)"
                             android:inputType="number" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -326,7 +410,7 @@
                             android:id="@+id/habitUnitInput"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Unit (e.g., pages)"
+                            android:hint="Unit (e.g. pages)"
                             android:inputType="text" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
@@ -335,13 +419,18 @@
                     android:id="@+id/addHabitButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:paddingVertical="10dp"
+                    android:layout_marginTop="18dp"
+                    android:paddingVertical="12dp"
                     android:text="@string/action_add_habit"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
+                    android:textSize="15sp"
                     app:backgroundTint="@color/brand_primary"
-                    app:cornerRadius="14dp" />
+                    app:cornerRadius="14dp"
+                    app:icon="@drawable/ic_add_habit"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    app:iconTint="@color/white" />
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -363,13 +452,38 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <TextView
+                <!-- Card header with icon -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/create_note_title"
-                    android:textColor="@color/text_primary"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        app:cardBackgroundColor="@color/surface_success"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp">
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            app:srcCompat="@drawable/ic_edit"
+                            android:tint="@color/brand_secondary"
+                            android:contentDescription="Note" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="@string/create_note_title"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -391,7 +505,7 @@
                         android:inputType="textCapSentences"
                         android:maxLines="1"
                         android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_secondary" />
+                        android:textColorHint="@color/text_hint" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -415,20 +529,25 @@
                         android:inputType="textMultiLine"
                         android:minLines="4"
                         android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_secondary" />
+                        android:textColorHint="@color/text_hint" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/addNoteButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:paddingVertical="10dp"
+                    android:layout_marginTop="18dp"
+                    android:paddingVertical="12dp"
                     android:text="@string/action_add_note"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
+                    android:textSize="15sp"
                     app:backgroundTint="@color/brand_secondary"
-                    app:cornerRadius="14dp" />
+                    app:cornerRadius="14dp"
+                    app:icon="@drawable/ic_add_habit"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    app:iconTint="@color/white" />
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
