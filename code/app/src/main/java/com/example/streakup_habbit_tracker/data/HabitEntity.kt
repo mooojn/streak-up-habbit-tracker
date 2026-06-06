@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "habits")
 data class HabitEntity(
     @PrimaryKey
-    val id: String,
-    var title: String,
-    var note: String,
+    val id: String = "",
+    var title: String = "",
+    var note: String = "",
     var streakCount: Int = 0,
     var lastCompletedDate: String = "",
     var previousStreakCount: Int = 0,

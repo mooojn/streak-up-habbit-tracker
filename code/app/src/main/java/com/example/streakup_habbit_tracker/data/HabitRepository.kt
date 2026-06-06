@@ -96,8 +96,10 @@ object HabitRepository {
             syncManager.pullCloudDataToLocal()
             val updatedFromCloud = database.habitDao().getAllHabits().map { it.toHabit() }
             if (updatedFromCloud.isNotEmpty()) {
-                habits.clear()
-                habits.addAll(updatedFromCloud)
+                synchronized(this@HabitRepository) {
+                    habits.clear()
+                    habits.addAll(updatedFromCloud)
+                }
             }
         }
         
@@ -357,7 +359,9 @@ object HabitRepository {
             // Try Room first
             val roomHabits = database.habitDao().getAllHabits().map { it.toHabit() }
             if (roomHabits.isNotEmpty()) {
-                habits.addAll(roomHabits)
+                synchronized(this@HabitRepository) {
+                    habits.addAll(roomHabits)
+                }
                 return@launch
             }
 
@@ -385,22 +389,24 @@ object HabitRepository {
                         }
                     }
 
-                    habits.add(
-                        Habit(
-                            id = id,
-                            title = title,
-                            note = jsonHabit.optString("note", ""),
-                            streakCount = jsonHabit.optInt("streakCount", 0).coerceAtLeast(0),
-                            lastCompletedDate = jsonHabit.optString("lastCompletedDate", ""),
-                            previousStreakCount = jsonHabit.optInt("previousStreakCount", 0).coerceAtLeast(0),
-                            previousLastCompletedDate = jsonHabit.optString("previousLastCompletedDate", ""),
-                            isFlexible = jsonHabit.optBoolean("isFlexible", false),
-                            targetValue = jsonHabit.optInt("targetValue", 1),
-                            currentValue = jsonHabit.optInt("currentValue", 0),
-                            unit = jsonHabit.optString("unit", ""),
-                            dailyNotes = dailyNotes
+                    synchronized(this@HabitRepository) {
+                        habits.add(
+                            Habit(
+                                id = id,
+                                title = title,
+                                note = jsonHabit.optString("note", ""),
+                                streakCount = jsonHabit.optInt("streakCount", 0).coerceAtLeast(0),
+                                lastCompletedDate = jsonHabit.optString("lastCompletedDate", ""),
+                                previousStreakCount = jsonHabit.optInt("previousStreakCount", 0).coerceAtLeast(0),
+                                previousLastCompletedDate = jsonHabit.optString("previousLastCompletedDate", ""),
+                                isFlexible = jsonHabit.optBoolean("isFlexible", false),
+                                targetValue = jsonHabit.optInt("targetValue", 1),
+                                currentValue = jsonHabit.optInt("currentValue", 0),
+                                unit = jsonHabit.optString("unit", ""),
+                                dailyNotes = dailyNotes
+                            )
                         )
-                    )
+                    }
                 }
                 // Save migrated data to Room
                 if (habits.isNotEmpty()) {
