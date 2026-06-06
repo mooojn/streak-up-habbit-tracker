@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "159374615289",
+    "project_id": "streak-up-habbit-tracker",
+    "storage_bucket": "streak-up-habbit-tracker.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159374615289:android:02c5d7ca8adb6b6c0df828",
+        "android_client_info": {
+          "package_name": "com.example.streakup_habbit_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159374615289-uvc8ha5dosi7muqdijrov23jsf2e4bbm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.streakup_habbit_tracker",
+            "certificate_hash": "4cb1469a8fea614de24ce649f1645dbca0d80868"
+          }
+        },
+        {
+          "client_id": "159374615289-8pje3c2te5oc75nsudl6ls7vaddpsv8b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwQ5qsmSQ4eoxyAOiVx5ZfVQQ4SN_lVaI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159374615289-8pje3c2te5oc75nsudl6ls7vaddpsv8b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
