@@ -16,7 +16,6 @@ import com.example.streakup_habbit_tracker.ui.TrackerFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import androidx.appcompat.app.AppCompatDelegate
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -28,8 +27,7 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        HabitRepository.initialize(applicationContext)
-        AppCompatDelegate.setDefaultNightMode(HabitRepository.darkMode)
+        HabitRepository.initialize(applicationContext)  // safety net
         setContentView(R.layout.activity_dashboard)
         requestNotificationPermissionIfNeeded()
 

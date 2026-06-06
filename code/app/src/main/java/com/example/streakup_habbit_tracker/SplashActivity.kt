@@ -27,7 +27,7 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        HabitRepository.initialize(applicationContext)
+        HabitRepository.initialize(applicationContext)  // safety net
         StreakReminderNotifier.ensureChannel(applicationContext)
         StreakReminderScheduler.schedule(applicationContext)
         setContentView(R.layout.activity_splash)

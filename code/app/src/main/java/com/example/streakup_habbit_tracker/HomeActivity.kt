@@ -40,7 +40,7 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        HabitRepository.initialize(applicationContext)
+        HabitRepository.initialize(applicationContext)  // safety net
         setContentView(R.layout.activity_home)
 
         nameInputLayout = findViewById(R.id.nameInputLayout)

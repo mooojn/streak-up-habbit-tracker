@@ -357,7 +357,7 @@ class HabitsFragment : Fragment() {
         val historyHeader: TextView = dialogView.findViewById(R.id.dailyNoteHistoryHeader)
         val historyList: RecyclerView = dialogView.findViewById(R.id.dailyNoteHistoryList)
 
-        dateLabel.text = "📅 $displayDate"
+        dateLabel.text = displayDate
         noteInput.setText(existingNote)
 
         // Show past notes (excluding today) in reverse chronological order
@@ -374,7 +374,7 @@ class HabitsFragment : Fragment() {
         }
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle("📝 ${habit.title}")
+            .setTitle(habit.title)
             .setView(dialogView)
             .setNegativeButton(R.string.action_cancel, null)
             .setPositiveButton(R.string.action_save) { _, _ ->

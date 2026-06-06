@@ -29,13 +29,14 @@ class BadgeAdapter(private val badges: List<Badge>) : RecyclerView.Adapter<Badge
         val badge = badges[position]
         holder.badgeTitle.text = badge.title
 
+        val context = holder.badgeCard.context
         if (badge.isUnlocked) {
-            holder.badgeCard.setCardBackgroundColor(Color.parseColor("#FFD700")) // Gold
-            holder.badgeIcon.imageTintList = ColorStateList.valueOf(Color.WHITE)
+            holder.badgeCard.setCardBackgroundColor(androidx.core.content.ContextCompat.getColor(context, R.color.brand_accent))
+            holder.badgeIcon.imageTintList = ColorStateList.valueOf(androidx.core.content.ContextCompat.getColor(context, R.color.white))
             holder.badgeTitle.alpha = 1.0f
         } else {
-            holder.badgeCard.setCardBackgroundColor(Color.parseColor("#E0E0E0")) // Gray
-            holder.badgeIcon.imageTintList = ColorStateList.valueOf(Color.GRAY)
+            holder.badgeCard.setCardBackgroundColor(androidx.core.content.ContextCompat.getColor(context, R.color.surface_card_alt))
+            holder.badgeIcon.imageTintList = ColorStateList.valueOf(androidx.core.content.ContextCompat.getColor(context, R.color.text_hint))
             holder.badgeTitle.alpha = 0.5f
         }
     }

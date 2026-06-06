@@ -28,7 +28,7 @@ class ProfileFragment : Fragment() {
     private var reminderToggle: SwitchMaterial? = null
     private var reminderTimeLabel: TextView? = null
     private var changeReminderTimeButton: MaterialButton? = null
-    private var friendsButton: MaterialButton? = null
+    private var signOutButton: MaterialButton? = null
     private var darkModeToggle: SwitchMaterial? = null
 
     override fun onCreateView(
@@ -50,18 +50,22 @@ class ProfileFragment : Fragment() {
         reminderToggle = view.findViewById(R.id.reminderToggle)
         reminderTimeLabel = view.findViewById(R.id.reminderTimeLabel)
         changeReminderTimeButton = view.findViewById(R.id.changeReminderTimeButton)
-        friendsButton = view.findViewById(R.id.friendsButton)
+        signOutButton = view.findViewById(R.id.signOutButton)
         darkModeToggle = view.findViewById(R.id.darkModeToggle)
 
         editNameButton?.setOnClickListener { showEditNameDialog() }
 
-        friendsButton?.setOnClickListener {
-            requireActivity().findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.dashboardToolbar)?.setTitle(R.string.title_friends)
-            requireActivity().supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, FriendsFragment())
-                .addToBackStack(null)
-                .commit()
+        signOutButton?.setOnClickListener {
+            com.google.firebase.auth.FirebaseAuth.getInstance().signOut()
+            com.google.android.gms.auth.api.signin.GoogleSignIn.getClient(
+                requireActivity(),
+                com.google.android.gms.auth.api.signin.GoogleSignInOptions.DEFAULT_SIGN_IN
+            ).signOut()
+            HabitRepository.userName = ""
+            val intent = android.content.Intent(requireActivity(), com.example.streakup_habbit_tracker.HomeActivity::class.java)
+            intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            requireActivity().finish()
         }
 
         // Ngrok URL
