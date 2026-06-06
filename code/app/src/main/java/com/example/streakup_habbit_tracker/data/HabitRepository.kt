@@ -8,6 +8,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 object HabitRepository {
 
@@ -34,6 +37,10 @@ object HabitRepository {
     private var isInitialized = false
     private var userNameBacking: String = ""
     private var ngrokUrlBacking: String = ""
+    
+    private lateinit var database: AppDatabase
+    private lateinit var syncManager: SyncManager
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     var userName: String
         get() = userNameBacking
@@ -74,11 +81,26 @@ object HabitRepository {
         if (isInitialized) return
 
         preferences = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        
+        database = AppDatabase.getDatabase(context)
+        syncManager = SyncManager(database)
+        
         userNameBacking = preferences?.getString(KEY_USER_NAME, "").orEmpty()
         ngrokUrlBacking = preferences?.getString(KEY_NGROK_URL, "").orEmpty()
         loadHabitsFromStorage()
         loadNotesFromStorage()
         loadDailyCompletionsFromStorage()
+        
+        // Background sync on startup
+        scope.launch {
+            syncManager.pullCloudDataToLocal()
+            val updatedFromCloud = database.habitDao().getAllHabits().map { it.toHabit() }
+            if (updatedFromCloud.isNotEmpty()) {
+                habits.clear()
+                habits.addAll(updatedFromCloud)
+            }
+        }
+        
         isInitialized = true
     }
 
@@ -134,7 +156,11 @@ object HabitRepository {
     @Synchronized
     fun deleteHabit(habitId: String) {
         habits.removeAll { it.id == habitId }
-        persistHabits()
+        scope.launch {
+            database.habitDao().deleteHabitById(habitId)
+            syncManager.deleteHabitFromCloud(habitId)
+        }
+        // persistHabits no longer needs to dump the whole array for deletions
     }
 
     @Synchronized
@@ -291,27 +317,11 @@ object HabitRepository {
 
     @Synchronized
     private fun persistHabits() {
-        val array = JSONArray()
-        habits.forEach { habit ->
-            val jsonHabit = JSONObject().apply {
-                put("id", habit.id)
-                put("title", habit.title)
-                put("note", habit.note)
-                put("streakCount", habit.streakCount)
-                put("lastCompletedDate", habit.lastCompletedDate)
-                put("previousStreakCount", habit.previousStreakCount)
-                put("previousLastCompletedDate", habit.previousLastCompletedDate)
-                put("isFlexible", habit.isFlexible)
-                put("targetValue", habit.targetValue)
-                put("currentValue", habit.currentValue)
-                put("unit", habit.unit)
-                val notesJson = JSONObject()
-                habit.dailyNotes.forEach { (date, text) -> notesJson.put(date, text) }
-                put("dailyNotes", notesJson)
-            }
-            array.put(jsonHabit)
+        scope.launch {
+            val entities = habits.map { HabitEntity.fromHabit(it) }
+            database.habitDao().insertHabits(entities)
+            syncManager.pushLocalDataToCloud()
         }
-        preferences?.edit()?.putString(KEY_HABITS, array.toString())?.apply()
     }
 
     @Synchronized
@@ -342,49 +352,64 @@ object HabitRepository {
     @Synchronized
     private fun loadHabitsFromStorage() {
         habits.clear()
-
-        val rawHabits = preferences?.getString(KEY_HABITS, null) ?: return
-        if (rawHabits.isBlank()) return
-
-        try {
-            val array = JSONArray(rawHabits)
-            for (index in 0 until array.length()) {
-                val jsonHabit = array.optJSONObject(index) ?: continue
-
-                val id = jsonHabit.optString("id", "").trim()
-                val title = jsonHabit.optString("title", "").trim()
-                if (id.isBlank() || title.isBlank()) continue
-
-                val dailyNotes = mutableMapOf<String, String>()
-                val notesJson = jsonHabit.optJSONObject("dailyNotes")
-                if (notesJson != null) {
-                    val notesKeys = notesJson.keys()
-                    while (notesKeys.hasNext()) {
-                        val k = notesKeys.next()
-                        val v = notesJson.optString(k, "")
-                        if (v.isNotBlank()) dailyNotes[k] = v
-                    }
-                }
-
-                habits.add(
-                    Habit(
-                        id = id,
-                        title = title,
-                        note = jsonHabit.optString("note", ""),
-                        streakCount = jsonHabit.optInt("streakCount", 0).coerceAtLeast(0),
-                        lastCompletedDate = jsonHabit.optString("lastCompletedDate", ""),
-                        previousStreakCount = jsonHabit.optInt("previousStreakCount", 0).coerceAtLeast(0),
-                        previousLastCompletedDate = jsonHabit.optString("previousLastCompletedDate", ""),
-                        isFlexible = jsonHabit.optBoolean("isFlexible", false),
-                        targetValue = jsonHabit.optInt("targetValue", 1),
-                        currentValue = jsonHabit.optInt("currentValue", 0),
-                        unit = jsonHabit.optString("unit", ""),
-                        dailyNotes = dailyNotes
-                    )
-                )
+        
+        scope.launch {
+            // Try Room first
+            val roomHabits = database.habitDao().getAllHabits().map { it.toHabit() }
+            if (roomHabits.isNotEmpty()) {
+                habits.addAll(roomHabits)
+                return@launch
             }
-        } catch (_: Exception) {
-            habits.clear()
+
+            // Migration from SharedPreferences if Room is empty
+            val rawHabits = preferences?.getString(KEY_HABITS, null) ?: return@launch
+            if (rawHabits.isBlank()) return@launch
+
+            try {
+                val array = JSONArray(rawHabits)
+                for (index in 0 until array.length()) {
+                    val jsonHabit = array.optJSONObject(index) ?: continue
+
+                    val id = jsonHabit.optString("id", "").trim()
+                    val title = jsonHabit.optString("title", "").trim()
+                    if (id.isBlank() || title.isBlank()) continue
+
+                    val dailyNotes = mutableMapOf<String, String>()
+                    val notesJson = jsonHabit.optJSONObject("dailyNotes")
+                    if (notesJson != null) {
+                        val notesKeys = notesJson.keys()
+                        while (notesKeys.hasNext()) {
+                            val k = notesKeys.next()
+                            val v = notesJson.optString(k, "")
+                            if (v.isNotBlank()) dailyNotes[k] = v
+                        }
+                    }
+
+                    habits.add(
+                        Habit(
+                            id = id,
+                            title = title,
+                            note = jsonHabit.optString("note", ""),
+                            streakCount = jsonHabit.optInt("streakCount", 0).coerceAtLeast(0),
+                            lastCompletedDate = jsonHabit.optString("lastCompletedDate", ""),
+                            previousStreakCount = jsonHabit.optInt("previousStreakCount", 0).coerceAtLeast(0),
+                            previousLastCompletedDate = jsonHabit.optString("previousLastCompletedDate", ""),
+                            isFlexible = jsonHabit.optBoolean("isFlexible", false),
+                            targetValue = jsonHabit.optInt("targetValue", 1),
+                            currentValue = jsonHabit.optInt("currentValue", 0),
+                            unit = jsonHabit.optString("unit", ""),
+                            dailyNotes = dailyNotes
+                        )
+                    )
+                }
+                // Save migrated data to Room
+                if (habits.isNotEmpty()) {
+                    persistHabits()
+                    preferences?.edit()?.remove(KEY_HABITS)?.apply()
+                }
+            } catch (_: Exception) {
+                habits.clear()
+            }
         }
     }
 
