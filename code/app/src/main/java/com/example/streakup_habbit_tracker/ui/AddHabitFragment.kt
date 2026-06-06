@@ -52,6 +52,11 @@ class AddHabitFragment : Fragment() {
     private var voiceConfirmButton: MaterialButton? = null
     private var currentVoiceDraft: VoiceCreateDraft? = null
 
+    private var breakdownButton: MaterialButton? = null
+    private var breakdownProgressBar: ProgressBar? = null
+    private var breakdownResultCard: com.google.android.material.card.MaterialCardView? = null
+    private var breakdownChipsContainer: LinearLayout? = null
+
     private val microphonePermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -108,6 +113,11 @@ class AddHabitFragment : Fragment() {
         voiceDraftDetailsText = view.findViewById(R.id.voiceDraftDetailsText)
         voiceCreateButton = view.findViewById(R.id.voiceCreateButton)
         voiceConfirmButton = view.findViewById(R.id.voiceConfirmButton)
+        breakdownButton = view.findViewById(R.id.breakdownButton)
+        breakdownProgressBar = view.findViewById(R.id.breakdownProgressBar)
+        breakdownResultCard = view.findViewById(R.id.breakdownResultCard)
+        breakdownChipsContainer = view.findViewById(R.id.breakdownChipsContainer)
+
         val addHabitButton: MaterialButton = view.findViewById(R.id.addHabitButton)
         val addNoteButton: MaterialButton = view.findViewById(R.id.addNoteButton)
 
@@ -119,6 +129,72 @@ class AddHabitFragment : Fragment() {
         voiceConfirmButton?.setOnClickListener { confirmVoiceDraft(view) }
         addHabitButton.setOnClickListener { addHabit(view) }
         addNoteButton.setOnClickListener { addNote(view) }
+
+        breakdownButton?.setOnClickListener { triggerHabitBreakdown() }
+    }
+
+    private fun triggerHabitBreakdown() {
+        val goal = habitTitleInput?.text?.toString()?.trim().orEmpty()
+        if (goal.isBlank()) {
+            Toast.makeText(requireContext(), "Enter a habit goal first (e.g. \"Get fit\")", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        breakdownProgressBar?.isVisible = true
+        breakdownButton?.isEnabled = false
+        breakdownResultCard?.isVisible = false
+        breakdownChipsContainer?.removeAllViews()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val microHabits = OllamaRepository.breakdownHabit(goal)
+                showBreakdownResults(microHabits)
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Breakdown failed: ${e.message}", Toast.LENGTH_LONG).show()
+            } finally {
+                breakdownProgressBar?.isVisible = false
+                breakdownButton?.isEnabled = true
+            }
+        }
+    }
+
+    private fun showBreakdownResults(habits: List<com.example.streakup_habbit_tracker.data.remote.HabitBreakdown>) {
+        if (habits.isEmpty()) {
+            Toast.makeText(requireContext(), "AI returned no habits. Try a clearer goal.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        breakdownChipsContainer?.removeAllViews()
+
+        habits.forEach { habit ->
+            val chip = com.google.android.material.chip.Chip(requireContext()).apply {
+                text = habit.title
+                isClickable = true
+                isCheckable = false
+                chipBackgroundColor = android.content.res.ColorStateList.valueOf(
+                    androidx.core.content.ContextCompat.getColor(context, R.color.surface_card)
+                )
+                setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.text_primary))
+                chipStrokeWidth = 1f
+                chipStrokeColor = android.content.res.ColorStateList.valueOf(
+                    androidx.core.content.ContextCompat.getColor(context, R.color.brand_primary)
+                )
+                val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(0, 0, 0, 8) }
+                layoutParams = params
+                setOnClickListener {
+                    habitTitleInput?.setText(habit.title)
+                    habitNoteInput?.setText(habit.description)
+                    breakdownResultCard?.isVisible = false
+                    Toast.makeText(requireContext(), "\"${habit.title}\" filled in!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            breakdownChipsContainer?.addView(chip)
+        }
+
+        breakdownResultCard?.isVisible = true
     }
 
     private fun requestVoiceCapture() {

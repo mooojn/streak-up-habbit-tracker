@@ -11,6 +11,7 @@
         android:orientation="vertical"
         android:padding="18dp">
 
+        <!-- Voice Create Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -142,6 +143,7 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Add Habit Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -166,6 +168,7 @@
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
+                <!-- Habit Name -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
@@ -189,6 +192,7 @@
                         android:textColorHint="@color/text_secondary" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Habit Note -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
@@ -213,11 +217,82 @@
                         android:textColorHint="@color/text_secondary" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- AI Habit Breakdown Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/breakdownButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:paddingVertical="10dp"
+                    android:text="✨ Help me define this"
+                    android:textAllCaps="false"
+                    android:textColor="@color/brand_primary"
+                    app:strokeColor="@color/brand_primary"
+                    app:cornerRadius="14dp" />
+
+                <!-- Breakdown Loading Indicator -->
+                <ProgressBar
+                    android:id="@+id/breakdownProgressBar"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="center_horizontal"
+                    android:indeterminate="true"
+                    android:visibility="gone" />
+
+                <!-- Breakdown Results Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/breakdownResultCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/surface_card_alt"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/brand_primary"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="✨ AI Habit Breakdown"
+                            android:textColor="@color/brand_primary"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Tap any habit below to fill in the form:"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+
+                        <LinearLayout
+                            android:id="@+id/breakdownChipsContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="10dp" />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Flexible Habit Switch -->
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/habitFlexibleSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="16dp"
                     android:text="Flexible Habit (e.g., track pages, water)" />
 
                 <LinearLayout
@@ -271,6 +346,7 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Add Note Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

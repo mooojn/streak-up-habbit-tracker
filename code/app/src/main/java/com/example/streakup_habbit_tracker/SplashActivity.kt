@@ -8,12 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.streakup_habbit_tracker.data.HabitRepository
 import com.example.streakup_habbit_tracker.reminders.StreakReminderNotifier
 import com.example.streakup_habbit_tracker.reminders.StreakReminderScheduler
+import com.google.firebase.auth.FirebaseAuth
 
 class SplashActivity : AppCompatActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
     private val navigateRunnable = Runnable {
-        val destination = if (HabitRepository.userName.isNotBlank()) {
+        val auth = FirebaseAuth.getInstance()
+        val destination = if (HabitRepository.userName.isNotBlank() || auth.currentUser != null) {
             DashboardActivity::class.java
         } else {
             HomeActivity::class.java

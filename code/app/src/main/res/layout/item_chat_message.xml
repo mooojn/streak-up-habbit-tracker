@@ -5,15 +5,100 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingTop="4dp"
-    android:paddingBottom="4dp">
+    android:paddingBottom="4dp"
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp">
 
-    <TextView
-        android:id="@+id/chatMessageText"
-        android:layout_width="wrap_content"
+    <!-- AI message row (avatar + bubble) -->
+    <LinearLayout
+        android:id="@+id/aiMessageRow"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_chat_input"
-        android:padding="12dp"
-        android:textColor="@color/text_primary"
-        android:textSize="16sp" />
+        android:orientation="horizontal"
+        android:gravity="top"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:text="🤖"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/aiMessageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:maxWidth="280dp"
+            android:background="@drawable/bg_chat_bubble_ai"
+            android:padding="12dp"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp"
+            android:lineSpacingMultiplier="1.3" />
+
+    </LinearLayout>
+
+    <!-- User message row (bubble only, end-aligned) -->
+    <LinearLayout
+        android:id="@+id/userMessageRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/userMessageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="280dp"
+            android:background="@drawable/bg_chat_bubble_user"
+            android:padding="12dp"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"
+            android:lineSpacingMultiplier="1.3" />
+
+    </LinearLayout>
+
+    <!-- Typing indicator -->
+    <LinearLayout
+        android:id="@+id/typingIndicatorRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:text="🤖"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="18dp"
+            app:cardBackgroundColor="@color/surface_card"
+            app:cardElevation="2dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Coach is thinking…"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:padding="12dp"
+                android:fontFamily="sans-serif-light" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
 
 </LinearLayout>
