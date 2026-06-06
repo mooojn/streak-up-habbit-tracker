@@ -10,4 +10,8 @@ interface OllamaApiService {
 
     @POST("api/chat")
     suspend fun chat(@Body request: OllamaChatRequest): Response<OllamaChatResponse>
+
+    @retrofit2.http.Streaming
+    @POST("api/chat")
+    suspend fun chatStream(@Body request: OllamaChatRequest): Response<okhttp3.ResponseBody>
 }

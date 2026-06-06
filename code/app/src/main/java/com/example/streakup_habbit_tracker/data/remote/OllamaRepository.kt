@@ -4,6 +4,9 @@ import com.example.streakup_habbit_tracker.data.HabitRepository
 import com.example.streakup_habbit_tracker.data.Note
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import okhttp3.OkHttpClient
 import org.json.JSONObject
 import retrofit2.Retrofit
@@ -101,6 +104,43 @@ object OllamaRepository {
         }
     }
 
+    fun sendChatStream(messages: List<OllamaMessage>): Flow<String> = flow {
+        val apiService = getApiService()
+        if (apiService == null) {
+            emit("Error: Ngrok URL is not set.")
+            return@flow
+        }
+        try {
+            val response = apiService.chatStream(OllamaChatRequest(messages = messages, stream = true))
+            if (!response.isSuccessful) {
+                emit("Error communicating with AI: ${response.code()} ${response.message()}")
+                return@flow
+            }
+            response.body()?.byteStream()?.bufferedReader()?.use { reader ->
+                var line: String? = reader.readLine()
+                while (line != null) {
+                    if (line.isNotBlank()) {
+                        try {
+                            val json = org.json.JSONObject(line)
+                            var content = json.optString("content", "")
+                            if (content.isEmpty() && json.has("message")) {
+                                content = json.getJSONObject("message").optString("content", "")
+                            }
+                            if (content.isNotEmpty()) {
+                                emit(content)
+                            }
+                        } catch (e: Exception) {
+                            // ignore parse error for incomplete chunks
+                        }
+                    }
+                    line = reader.readLine()
+                }
+            }
+        } catch (e: Exception) {
+            emit("\n[Network error: ${e.message}]")
+        }
+    }.flowOn(Dispatchers.IO)
+
     suspend fun createDraftFromVoice(transcript: String): VoiceCreateDraft = withContext(Dispatchers.IO) {
         val apiService = getApiService()
             ?: throw IllegalStateException("Ngrok URL is not set.")
@@ -163,4 +203,37 @@ object OllamaRepository {
         }
         return cleaned.substring(start, end + 1)
     }
+
+    /**
+     * Sends a broad goal to the AI and gets back 3-5 specific, measurable micro-habits with descriptions.
+     * Returns a list of HabitBreakdown, or throws on failure.
+     */
+    suspend fun breakdownHabit(goal: String): List<HabitBreakdown> = withContext(Dispatchers.IO) {
+        val apiService = getApiService()
+            ?: throw IllegalStateException("Ngrok URL is not set. Go to Profile → Settings to set the server URL.")
+
+        val response = apiService.generateInsights(OllamaRequest(prompt = goal, promptType = "breakdown"))
+        if (!response.isSuccessful || response.body() == null) {
+            throw IllegalStateException("Error from AI: ${response.code()} ${response.message()}")
+        }
+
+        val raw = response.body()?.response.orEmpty()
+        // Extract JSON array from the response
+        val cleaned = raw.replace("```json", "", ignoreCase = true).replace("```", "").trim()
+        val start = cleaned.indexOf('[')
+        val end = cleaned.lastIndexOf(']')
+        if (start == -1 || end == -1 || end <= start) {
+            throw IllegalStateException("AI returned an unexpected format. Please try again.")
+        }
+        val jsonArrayStr = cleaned.substring(start, end + 1)
+        val arr = org.json.JSONArray(jsonArrayStr)
+        (0 until arr.length()).map { 
+            val obj = arr.getJSONObject(it)
+            HabitBreakdown(
+                title = obj.optString("title", "").trim(),
+                description = obj.optString("description", "").trim()
+            )
+        }.filter { it.title.isNotBlank() }
+    }
 }
+

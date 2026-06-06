@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class OllamaRequest(
     @SerializedName("model") val model: String = "qwen2.5-coder:7b",
     @SerializedName("prompt") val prompt: String,
+    @SerializedName("prompt_type") val promptType: String? = null,
     @SerializedName("stream") val stream: Boolean = false
 )
 
@@ -36,4 +37,9 @@ data class VoiceCreateDraft(
     val isFlexible: Boolean = false,
     val targetValue: Int = 1,
     val unit: String = ""
+)
+
+data class HabitBreakdown(
+    val title: String,
+    val description: String
 )
